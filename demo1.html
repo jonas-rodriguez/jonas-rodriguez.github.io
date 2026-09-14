@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informe de Prospección - Móstoles</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #111827;
+            --text-color: #f3f4f6;
+            --text-muted: #9ca3af;
+            --primary: #10b981;
+            --primary-glow: rgba(16, 185, 129, 0.15);
+            --secondary: #3b82f6;
+            --border-color: rgba(255, 255, 255, 0.05);
+            --hover-bg: rgba(255, 255, 255, 0.02);
+            --accent: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1f2937, #111827);
+            border: 1px solid var(--border-color);
+            padding: 2.5rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #10b981, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta-paragraph {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 900px;
+            margin-bottom: 1.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background-color: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.05);
+        }
+
+        .stat-val {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-lbl {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.75rem;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            font-weight: 500;
+            padding: 0.5rem 1.5rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-color);
+        }
+
+        .tab-btn.active {
+            color: var(--text-color);
+            background-color: var(--primary-glow);
+            border: 1px solid var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Table view styling */
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-box, .filter-select {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-box:focus, .filter-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        .table-container {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow-x: auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.95rem;
+        }
+
+        th {
+            background-color: rgba(255, 255, 255, 0.02);
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        tr:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .badge-email {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--primary);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .badge-web {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--secondary);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        /* Cluster View styling */
+        .clusters-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .cluster-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: border-color 0.3s ease;
+        }
+
+        .cluster-card:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .cluster-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+
+        .cluster-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .cluster-reason {
+            color: var(--accent);
+            font-size: 0.85rem;
+            font-weight: 500;
+            background-color: rgba(245, 158, 11, 0.08);
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .cluster-places-table {
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .cluster-strategy {
+            background-color: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--border-color);
+            padding: 1.25rem;
+            border-radius: 10px;
+        }
+
+        .cluster-strategy h4 {
+            color: var(--primary);
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .cluster-strategy ul {
+            list-style: none;
+        }
+
+        .cluster-strategy li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .cluster-strategy li::before {
+            content: '➔';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+        }
+
+        .email-tag {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Informe Comercial de Hostelería</h1>
+            <p class="meta-paragraph">
+                Prospección comercial y análisis de leads de hostelería en la provincia de <strong>Comunidad De Madrid</strong>, 
+                municipio de <strong>Móstoles</strong>, cubriendo el sector <strong>Distrito 1: Centro</strong>. 
+                Los datos contienen la información de contacto filtrada y estructurada para campañas de prospección.
+            </p>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-val">89</div>
+                    <div class="stat-lbl">Locales Filtrados</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-val">0</div>
+                    <div class="stat-lbl">Con Correo</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-val">43</div>
+                    <div class="stat-lbl">Con Sitio Web</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-val">2</div>
+                    <div class="stat-lbl">Grupos / Cadenas</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('table-tab')">Listado de Locales</button>
+            <button class="tab-btn" onclick="switchTab('clusters-tab')">Análisis de Clusters</button>
+        </div>
+
+        <!-- Table Tab -->
+        <div id="table-tab" class="tab-content active">
+            <div class="controls">
+                <input type="text" id="search-input" class="search-box" placeholder="Buscar por nombre, dirección, teléfono, correo..." oninput="onFilterChange()">
+                <select id="category-select" class="filter-select" onchange="onFilterChange()">
+                    <option value="">Todas las categorías</option>
+                </select>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Establecimiento</th>
+                            <th>Categoría</th>
+                            <th>Teléfono</th>
+                            <th>Web / URL</th>
+                            <th>Correo</th>
+                            <th>Dirección</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <!-- Filled by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Clusters Tab -->
+        <div id="clusters-tab" class="tab-content">
+            <div id="clusters-list" class="clusters-container">
+                <!-- Filled by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const records = [{"title": "VIPS", "category": "Restaurante", "address": "P.º de Arroyomolinos, 33, A, 28938 Móstoles, Madrid", "phone": "916 47 78 00", "url": "https://www.vips.es/restaurantes/mostoles/vips-arroyomolinos?&utm_medium=organic&utm_source=gmb", "owner": "VIPS", "street": "P.º de Arroyomolinos, 33, A", "city": "Mostoles", "postal_code": "28938", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"116209561806543160328\",\"name\":\"VIPS (propietario)\",\"link\":\"https://www.google.com/maps/contrib/116209561806543160328\"}", "website": "https://www.vips.es/restaurantes/mostoles/vips-arroyomolinos?&utm_medium=organic&utm_source=gmb", "review_rating": "3.900000", "review_count": "2634", "emails": ""}, {"title": "Bohio Bar & Restaurant", "category": "Bar restaurante", "address": "C. Huesca, 12, Loc 3, 28934 Móstoles, Madrid", "phone": "910 94 15 10", "url": "https://byruby12.github.io/BohioBar/", "owner": "Bohio Bar & Restaurant", "street": "C. Huesca, 12, Loc 3", "city": "Mostoles", "postal_code": "28934", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"118060833770353060724\",\"name\":\"Bohio Bar \\u0026 Restaurant (propietario)\",\"link\":\"https://www.google.com/maps/contrib/118060833770353060724\"}", "website": "https://byruby12.github.io/BohioBar/", "review_rating": "4.900000", "review_count": "583", "emails": ""}, {"title": "Bar Restaurante Arteaga", "category": "Bar restaurante", "address": "C. Huesca, 14, 28934 Móstoles, Madrid", "phone": "603 01 32 41", "url": "", "owner": "Bar Restaurante Arteaga", "street": "C. Huesca, 14", "city": "Mostoles", "postal_code": "28934", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"\",\"name\":\"Bar Restaurante Arteaga (propietario)\",\"link\":\"\"}", "website": "", "review_rating": "4.300000", "review_count": "101", "emails": ""}, {"title": "YUMMY, PIZZA KEBAB, BURGUER", "category": "Restaurante", "address": "C. Huesca, 12, local 2, 28934 Móstoles, Madrid", "phone": "624 24 46 83", "url": "http://yummypizzakebabburguer.com/?utm_source=gmb&utm_medium=referral", "owner": "YUMMY, PIZZA KEBAB, BURGUER", "street": "C. Huesca, 12, local 2", "city": "Mostoles", "postal_code": "28934", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"116777218118512031554\",\"name\":\"YUMMY, PIZZA KEBAB, BURGUER (propietario)\",\"link\":\"https://www.google.com/maps/contrib/116777218118512031554\"}", "website": "http://yummypizzakebabburguer.com/?utm_source=gmb&utm_medium=referral", "review_rating": "4.600000", "review_count": "203", "emails": ""}, {"title": "Bar restaurante el bodegon", "category": "Restaurante", "address": "Av. del dos de Mayo, 42, 28934 Móstoles, Madrid", "phone": "645 40 08 86", "url": "", "owner": "Bar restaurante el bodegon", "street": "Av. del dos de Mayo, 42", "city": "Mostoles", "postal_code": "28934", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"\",\"name\":\"Bar restaurante el bodegon (propietario)\",\"link\":\"\"}", "website": "", "review_rating": "4.200000", "review_count": "67", "emails": ""}, {"title": "Taberna La Felipa", "category": "Bar", "address": "Av. del dos de Mayo, 25, 28934 Móstoles, Madrid", "phone": "914 85 90 06", "url": "https://tabernalafelipa.shop/", "owner": "Taberna La Felipa", "street": "Av. del dos de Mayo, 25", "city": "Mostoles", "postal_code": "28934", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"105056154399411631328\",\"name\":\"Taberna La Felipa (propietario)\",\"link\":\"https://www.google.com/maps/contrib/105056154399411631328\"}", "website": "https://tabernalafelipa.shop/", "review_rating": "4.100000", "review_count": "748", "emails": ""}, {"title": "Restaurante Casa Manolo El Gordo", "category": "Restaurante", "address": "C. Villaamil, 54, 28934 Móstoles, Madrid", "phone": "916 13 27 40", "url": "https://www.facebook.com/MarisqueriaelGordo1/", "owner": "Restaurante Casa Manolo El Gordo", "street": "C. Villaamil, 54", "city": "Mostoles", "postal_code": "28934", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"109684841285021703189\",\"name\":\"Restaurante Casa Manolo El Gordo (propietario)\",\"link\":\"https://www.google.com/maps/contrib/109684841285021703189\"}", "website": "https://www.facebook.com/MarisqueriaelGordo1/", "review_rating": "4.300000", "review_count": "422", "emails": ""}, {"title": "Cafetería Bar Cruz", "category": "Restaurante", "address": "Av. del dos de Mayo, 27, 28934 Móstoles, Madrid", "phone": "916 14 56 57", "url": "", "owner": "Cafetería Bar Cruz", "street": "Av. del dos de Mayo, 27", "city": "Mostoles", "postal_code": "28934", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"\",\"name\":\"Cafetería Bar Cruz (propietario)\",\"link\":\"\"}", "website": "", "review_rating": "4.200000", "review_count": "721", "emails": ""}, {"title": "Ineffabile Ristorante | Restaurante italiano en Móstoles", "category": "Restaurante italiano", "address": "C. de Andrés Torrejón, 4, 28931 Móstoles, Madrid", "phone": "913 26 24 95", "url": "https://www.ineffabileristorante.com/", "owner": "Ineffabile Ristorante | Restaurante italiano en Móstoles", "street": "C. de Andres Torrejon, 4", "city": "Mostoles", "postal_code": "28931", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"110178493379976493845\",\"name\":\"Ineffabile Ristorante | Restaurante italiano en Móstoles (propietario)\",\"link\":\"https://www.google.com/maps/contrib/110178493379976493845\"}", "website": "https://www.ineffabileristorante.com/", "review_rating": "4.800000", "review_count": "3489", "emails": ""}, {"title": "La Federala Móstoles", "category": "Restaurante mexicano", "address": "C. Río Segura, 22, 28935 Móstoles, Madrid", "phone": "692 13 22 55", "url": "https://lafederala.com/", "owner": "La Federala Móstoles", "street": "C. Rio Segura, 22", "city": "Mostoles", "postal_code": "28935", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"116855075863613947023\",\"name\":\"La Federala Móstoles (propietario)\",\"link\":\"https://www.google.com/maps/contrib/116855075863613947023\"}", "website": "https://lafederala.com/", "review_rating": "4.700000", "review_count": "3430", "emails": ""}, {"title": "Foster's Hollywood", "category": "Hamburguesería", "address": "Calle Cámara de la Industria, 2, 28938 Móstoles, Madrid", "phone": "910 58 73 40", "url": "https://fostershollywood.es/", "owner": "Foster's Hollywood", "street": "Calle Camara de la Industria, 2", "city": "Mostoles", "postal_code": "28938", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"113347226662937251920\",\"name\":\"Foster's Hollywood (propietario)\",\"link\":\"https://www.google.com/maps/contrib/113347226662937251920\"}", "website": "https://fostershollywood.es/", "review_rating": "4.100000", "review_count": "3557", "emails": ""}, {"title": "ROOI ROOK MÓSTOLES", "category": "Restaurante americano", "address": "C. Río Segura, 22, Loc 15 - 16, 28935 Móstoles, Madrid", "phone": "605 49 18 28", "url": "http://www.rooirook.com/", "owner": "ROOI ROOK MÓSTOLES", "street": "C. Rio Segura, 22, Loc 15 - 16", "city": "Mostoles", "postal_code": "28935", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"115654963163177099743\",\"name\":\"ROOI ROOK MÓSTOLES (propietario)\",\"link\":\"https://www.google.com/maps/contrib/115654963163177099743\"}", "website": "http://www.rooirook.com/", "review_rating": "4.700000", "review_count": "978", "emails": ""}, {"title": "LEZZET RESTAURANTE TURCO", "category": "Restaurante turco", "address": "C. Camino de Leganes, 16, 28937 Móstoles, Madrid", "phone": "919 95 25 30", "url": "", "owner": "LEZZET RESTAURANTE TURCO", "street": "C. Camino de Leganes, 16", "city": "Mostoles", "postal_code": "28937", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"102244270688225114109\",\"name\":\"LEZZET RESTAURANTE TURCO (propietario)\",\"link\":\"https://www.google.com/maps/contrib/102244270688225114109\"}", "website": "", "review_rating": "4.900000", "review_count": "307", "emails": ""}, {"title": "La Taguara de Mariamojito", "category": "Restaurante venezolano", "address": "C. Cid Campeador, 6, 28935 Móstoles, Madrid", "phone": "611 51 14 03", "url": "https://www.lataguarademariamojito.es/", "owner": "La Taguara de Mariamojito", "street": "C. Cid Campeador, 6", "city": "Mostoles", "postal_code": "28935", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"103270738792003333735\",\"name\":\"La Taguara de Mariamojito (propietario)\",\"link\":\"https://www.google.com/maps/contrib/103270738792003333735\"}", "website": "https://www.lataguarademariamojito.es/", "review_rating": "4.800000", "review_count": "718", "emails": ""}, {"title": "Casa Nico", "category": "Bar restaurante", "address": "C. Dr. Luis Montes, 2, 28935 Móstoles, Madrid", "phone": "914 00 94 40", "url": "", "owner": "Casa Nico", "street": "C. Dr. Luis Montes, 2", "city": "Mostoles", "postal_code": "28935", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"101706546131229691814\",\"name\":\"Casa Nico (propietario)\",\"link\":\"https://www.google.com/maps/contrib/101706546131229691814\"}", "website": "", "review_rating": "5.000000", "review_count": "61", "emails": ""}, {"title": "La Estación", "category": "Bar restaurante", "address": "C. Salcillo, 5, posterior, 28932 Móstoles, Madrid", "phone": "666 08 84 53", "url": "", "owner": "La Estación", "street": "C. Salcillo, 5, posterior", "city": "Mostoles", "postal_code": "28932", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"102566748576788326566\",\"name\":\"La Estación (propietario)\",\"link\":\"https://www.google.com/maps/contrib/102566748576788326566\"}", "website": "", "review_rating": "4.800000", "review_count": "56", "emails": ""}, {"title": "Restaurante Chino Qun Ying", "category": "Restaurante chino", "address": "C. Alfonso XII, 49, 28934 Móstoles, Madrid", "phone": "916 45 95 19", "url": "http://www.qunying.es/", "owner": "Restaurante Chino Qun Ying", "street": "C. Alfonso XII, 49", "city": "Mostoles", "postal_code": "28934", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"105295574220036841651\",\"name\":\"Restaurante Chino Qun Ying (propietario)\",\"link\":\"https://www.google.com/maps/contrib/105295574220036841651\"}", "website": "http://www.qunying.es/", "review_rating": "3.900000", "review_count": "554", "emails": ""}, {"title": "Restaurante el Rincon Castellano", "category": "Restaurante", "address": "Calle rio llobregat 9, C. Río Ebro, 6, posterior, 28935 Móstoles, Madrid", "phone": "916 85 30 78", "url": "", "owner": "Restaurante el Rincon Castellano", "street": "Calle rio llobregat 9, C. Rio Ebro, 6, posterior", "city": "Mostoles", "postal_code": "28935", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"103512373691717908920\",\"name\":\"Restaurante el Rincon Castellano (propietario)\",\"link\":\"https://www.google.com/maps/contrib/103512373691717908920\"}", "website": "", "review_rating": "4.500000", "review_count": "54", "emails": ""}, {"title": "Pizzería Carlos", "category": "Pizzería", "address": "Av. del Alcalde de Móstoles, 8, 28933 Móstoles, Madrid", "phone": "912 90 33 51", "url": "https://pizzeriascarlos.es/?utm_source=GMB&utm_medium=web&utm_campaign=mostolesII", "owner": "Pizzería Carlos", "street": "Av. del Alcalde de Mostoles, 8", "city": "Mostoles", "postal_code": "28933", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"106672975310873110589\",\"name\":\"Pizzería Carlos (propietario)\",\"link\":\"https://www.google.com/maps/contrib/106672975310873110589\"}", "website": "https://pizzeriascarlos.es/?utm_source=GMB&utm_medium=web&utm_campaign=mostolesII", "review_rating": "4.300000", "review_count": "675", "emails": ""}, {"title": "Cervecería Restaurante Echegaray", "category": "Restaurante", "address": "C. Echegaray, s/n, Loc 7, 28932 Móstoles, Madrid", "phone": "910 42 56 16", "url": "http://restauranteechegaray.com/", "owner": "Cervecería Restaurante Echegaray", "street": "C. Echegaray, s/n, Loc 7", "city": "Mostoles", "postal_code": "28932", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"105102045218919428173\",\"name\":\"Cervecería Restaurante Echegaray (propietario)\",\"link\":\"https://www.google.com/maps/contrib/105102045218919428173\"}", "website": "http://restauranteechegaray.com/", "review_rating": "4.700000", "review_count": "387", "emails": ""}, {"title": "Restaurante Olimpia", "category": "Restaurante", "address": "C. Agustina de Aragón, 31, 28931 Móstoles, Madrid", "phone": "911 52 89 78", "url": "", "owner": "Restaurante Olimpia", "street": "C. Agustina de Aragon, 31", "city": "Mostoles", "postal_code": "28931", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"106951842757233324624\",\"name\":\"Restaurante Olimpia (propietario)\",\"link\":\"https://www.google.com/maps/contrib/106951842757233324624\"}", "website": "", "review_rating": "4.500000", "review_count": "194", "emails": ""}, {"title": "Cruz II", "category": "Bar de tapas", "address": "C. de Juan XXIII, 5, 28938 Móstoles, Madrid", "phone": "916 17 31 31", "url": "https://mapsu.me/cruz-ii-557298-es", "owner": "Cruz II", "street": "C. de Juan XXIII, 5", "city": "Mostoles", "postal_code": "28938", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"102452516890580928645\",\"name\":\"Cruz II (propietario)\",\"link\":\"https://www.google.com/maps/contrib/102452516890580928645\"}", "website": "https://mapsu.me/cruz-ii-557298-es", "review_rating": "4.400000", "review_count": "685", "emails": ""}, {"title": "Ginos", "category": "Restaurante", "address": "P.º de Arroyomolinos, 33, 28938 Móstoles, Madrid", "phone": "916 47 79 81", "url": "https://www.ginos.es/restaurante-italiano/mostoles/paseo-arroyomolinos-33", "owner": "Ginos", "street": "P.º de Arroyomolinos, 33", "city": "Mostoles", "postal_code": "28938", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"104331746656344103601\",\"name\":\"Ginos (propietario)\",\"link\":\"https://www.google.com/maps/contrib/104331746656344103601\"}", "website": "https://www.ginos.es/restaurante-italiano/mostoles/paseo-arroyomolinos-33", "review_rating": "4.200000", "review_count": "769", "emails": ""}, {"title": "Restaurante Manila Urban Grill", "category": "Restaurante", "address": "C. Andrómeda, 48, 28938 Móstoles, Madrid", "phone": "912 62 10 78", "url": "", "owner": "Restaurante Manila Urban Grill", "street": "C. Andromeda, 48", "city": "Mostoles", "postal_code": "28938", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"103640602488585245200\",\"name\":\"Restaurante Manila Urban Grill (propietario)\",\"link\":\"https://www.google.com/maps/contrib/103640602488585245200\"}", "website": "", "review_rating": "4.400000", "review_count": "1308", "emails": ""}, {"title": "Destino Raíz Restaurant Café", "category": "Restaurante", "address": "Pl. del Sol, 35, 28938 Móstoles, Madrid", "phone": "659 50 22 25", "url": "https://destinoraiz.es/", "owner": "Destino Raíz Restaurant Café", "street": "Pl. del Sol, 35", "city": "Mostoles", "postal_code": "28938", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"106057577745308600492\",\"name\":\"Destino Raíz Restaurant Café (propietario)\",\"link\":\"https://www.google.com/maps/contrib/106057577745308600492\"}", "website": "https://destinoraiz.es/", "review_rating": "4.700000", "review_count": "7755", "emails": ""}, {"title": "Mesón del Jamón Los Picos", "category": "Restaurante", "address": "C. América, 7, 28931 Móstoles, Madrid", "phone": "912 36 61 20", "url": "http://www.mesonlospicos.es/", "owner": "Mesón del Jamón Los Picos", "street": "C. America, 7", "city": "Mostoles", "postal_code": "28931", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"111869250736561957240\",\"name\":\"Mesón del Jamón Los Picos (propietario)\",\"link\":\"https://www.google.com/maps/contrib/111869250736561957240\"}", "website": "http://www.mesonlospicos.es/", "review_rating": "4.500000", "review_count": "1867", "emails": ""}, {"title": "El Rincón del Sabor", "category": "Restaurante", "address": "C. Pintor Velazquez, 18, posterior, 28933 Móstoles, Madrid", "phone": "912 93 68 42", "url": "https://elrincondsabor.es/", "owner": "El Rincón del Sabor", "street": "C. Pintor Velazquez, 18, posterior", "city": "Mostoles", "postal_code": "28933", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"107734720967179235039\",\"name\":\"El Rincón del Sabor (propietario)\",\"link\":\"https://www.google.com/maps/contrib/107734720967179235039\"}", "website": "https://elrincondsabor.es/", "review_rating": "4.200000", "review_count": "177", "emails": ""}, {"title": "Sidrería Cervecería Las Palmeras", "category": "Restaurante", "address": "C. de las Palmas, 48, 28938 Móstoles, Madrid", "phone": "605 14 38 32", "url": "https://drive.google.com/drive/u/1/recent", "owner": "Sidrería Cervecería Las Palmeras", "street": "C. de las Palmas, 48", "city": "Mostoles", "postal_code": "28938", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"112015429642519324196\",\"name\":\"Sidrería Cervecería Las Palmeras (propietario)\",\"link\":\"https://www.google.com/maps/contrib/112015429642519324196\"}", "website": "https://drive.google.com/drive/u/1/recent", "review_rating": "4.300000", "review_count": "241", "emails": ""}, {"title": "Restaurante Tenderete Canario", "category": "Restaurante", "address": "C. Alfonso XII, 39, 28934 Móstoles, Madrid", "phone": "641 36 03 97", "url": "", "owner": "Restaurante Tenderete Canario", "street": "C. Alfonso XII, 39", "city": "Mostoles", "postal_code": "28934", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"110574141010906378599\",\"name\":\"Restaurante Tenderete Canario (propietario)\",\"link\":\"https://www.google.com/maps/contrib/110574141010906378599\"}", "website": "", "review_rating": "4.300000", "review_count": "774", "emails": ""}, {"title": "LAYALI Coffee&Grill - Móstoles", "category": "Brasería", "address": "C. de Simón Hernández, 24, 28937 Móstoles, Madrid", "phone": "672 62 44 99", "url": "http://www.restaurantelayali.com/", "owner": "LAYALI Coffee&Grill - Móstoles", "street": "C. de Simon Hernandez, 24", "city": "Mostoles", "postal_code": "28937", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"104224050777306833321\",\"name\":\"LAYALI Coffee\\u0026Grill - Móstoles (propietario)\",\"link\":\"https://www.google.com/maps/contrib/104224050777306833321\"}", "website": "http://www.restaurantelayali.com/", "review_rating": "4.400000", "review_count": "666", "emails": ""}, {"title": "Restaurante Sandara", "category": "Restaurante", "address": "C. Alfonso XII, 2, 28934 Móstoles, Madrid", "phone": "912 62 30 44", "url": "https://restaurantesandara.shop/", "owner": "Restaurante Sandara", "street": "C. Alfonso XII, 2", "city": "Mostoles", "postal_code": "28934", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"105109489054151322466\",\"name\":\"Restaurante Sandara (propietario)\",\"link\":\"https://www.google.com/maps/contrib/105109489054151322466\"}", "website": "https://restaurantesandara.shop/", "review_rating": "3.800000", "review_count": "791", "emails": ""}, {"title": "Nao parrilla", "category": "Restaurante", "address": "C. Río Odiel, 10, 28935 Móstoles, Madrid", "phone": "914 15 12 55", "url": "", "owner": "Nao parrilla", "street": "C. Rio Odiel, 10", "city": "Mostoles", "postal_code": "28935", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"116224615820767553866\",\"name\":\"Nao parrilla (propietario)\",\"link\":\"https://www.google.com/maps/contrib/116224615820767553866\"}", "website": "", "review_rating": "4.600000", "review_count": "521", "emails": ""}, {"title": "Restaurante Raul", "category": "Restaurante", "address": "C. Nápoles, 3, 28938 Móstoles, Madrid", "phone": "914 96 91 16", "url": "", "owner": "Restaurante Raul", "street": "C. Napoles, 3", "city": "Mostoles", "postal_code": "28938", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"\",\"name\":\"Restaurante Raul (propietario)\",\"link\":\"\"}", "website": "", "review_rating": "4.000000", "review_count": "17", "emails": ""}, {"title": "Cafetería-Cervecería Donde Paco", "category": "Cafetería", "address": "P.º de Arroyomolinos, 30, 28938 Móstoles, Madrid", "phone": "680 15 67 52", "url": "", "owner": "Cafetería-Cervecería Donde Paco", "street": "P.º de Arroyomolinos, 30", "city": "Mostoles", "postal_code": "28938", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"\",\"name\":\"Cafetería-Cervecería Donde Paco (propietario)\",\"link\":\"\"}", "website": "", "review_rating": "4.700000", "review_count": "103", "emails": ""}, {"title": "Bar Los Sandalios", "category": "Bar", "address": "C. Tokio, 28938 Móstoles, Madrid", "phone": "681 35 38 07", "url": "", "owner": "Bar Los Sandalios", "street": "C. Tokio", "city": "Mostoles", "postal_code": "28938", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"\",\"name\":\"Bar Los Sandalios (propietario)\",\"link\":\"\"}", "website": "", "review_rating": "4.500000", "review_count": "39", "emails": ""}, {"title": "El Biombo", "category": "Bar restaurante", "address": "C. Río Záncara, 4, 28935 Móstoles, Madrid", "phone": "912 63 23 30", "url": "https://www.instagram.com/barelbiombo1?igsh=MTlxaXF5anU1djd0Yg==&utm_source=qr", "owner": "El Biombo", "street": "C. Rio Zancara, 4", "city": "Mostoles", "postal_code": "28935", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"101987636721273447745\",\"name\":\"El Biombo (propietario)\",\"link\":\"https://www.google.com/maps/contrib/101987636721273447745\"}", "website": "https://www.instagram.com/barelbiombo1?igsh=MTlxaXF5anU1djd0Yg==&utm_source=qr", "review_rating": "4.700000", "review_count": "55", "emails": ""}, {"title": "Bar Cervecería Raúl C.B.", "category": "Bar de tapas", "address": "C. Roma, 8, y 10, 28938 Móstoles, Madrid", "phone": "914 96 91 16", "url": "", "owner": "Bar Cervecería Raúl C.B.", "street": "C. Roma, 8, y 10", "city": "Mostoles", "postal_code": "28938", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"107105088876970024812\",\"name\":\"Bar Cervecería Raúl C.B. (propietario)\",\"link\":\"https://www.google.com/maps/contrib/107105088876970024812\"}", "website": "", "review_rating": "4.200000", "review_count": "475", "emails": ""}, {"title": "Montaditos Y Tapas Co.", "category": "Bar", "address": "C. de las Palmas, 53, 28938 Móstoles, Madrid", "phone": "635 72 11 22", "url": "", "owner": "Montaditos Y Tapas Co.", "street": "C. de las Palmas, 53", "city": "Mostoles", "postal_code": "28938", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"100396021911358668352\",\"name\":\"Montaditos Y Tapas Co. (propietario)\",\"link\":\"https://www.google.com/maps/contrib/100396021911358668352\"}", "website": "", "review_rating": "3.700000", "review_count": "194", "emails": ""}, {"title": "Taberna VinoTapas", "category": "Restaurante", "address": "C. Río Tormes, 8, 28935 Móstoles, Madrid", "phone": "919 95 77 44", "url": "", "owner": "Taberna VinoTapas", "street": "C. Rio Tormes, 8", "city": "Mostoles", "postal_code": "28935", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"105112851170921187687\",\"name\":\"Taberna VinoTapas (propietario)\",\"link\":\"https://www.google.com/maps/contrib/105112851170921187687\"}", "website": "", "review_rating": "4.900000", "review_count": "46", "emails": ""}, {"title": "Cafe Bar LA ESQUINA", "category": "Bar", "address": "C. Teruel, 28934 Móstoles, Madrid", "phone": "662 08 76 13", "url": "", "owner": "Cafe Bar LA ESQUINA", "street": "C. Teruel", "city": "Mostoles", "postal_code": "28934", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"\",\"name\":\"Cafe Bar LA ESQUINA (propietario)\",\"link\":\"\"}", "website": "", "review_rating": "4.700000", "review_count": "53", "emails": ""}, {"title": "Bar Lucas", "category": "Bar", "address": "C. Villaamil, 15, LOCAL, 28934 Móstoles, Madrid", "phone": "661 31 42 93", "url": "", "owner": "Bar Lucas", "street": "C. Villaamil, 15, LOCAL", "city": "Mostoles", "postal_code": "28934", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"110608987894188050572\",\"name\":\"Bar Lucas (propietario)\",\"link\":\"https://www.google.com/maps/contrib/110608987894188050572\"}", "website": "", "review_rating": "4.400000", "review_count": "207", "emails": ""}, {"title": "Bodega Extremeña", "category": "Bar", "address": "C. Gran Capitán, 20, 28933 Móstoles, Madrid", "phone": "916 17 95 48", "url": "", "owner": "Bodega Extremeña", "street": "C. Gran Capitan, 20", "city": "Mostoles", "postal_code": "28933", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"\",\"name\":\"Bodega Extremeña (propietario)\",\"link\":\"\"}", "website": "", "review_rating": "4.700000", "review_count": "251", "emails": ""}, {"title": "Bar Romero", "category": "Bar", "address": "C. Río Tormes, 19, 28935 Móstoles, Madrid", "phone": "912 39 34 15", "url": "", "owner": "Bar Romero", "street": "C. Rio Tormes, 19", "city": "Mostoles", "postal_code": "28935", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"\",\"name\":\"Bar Romero (propietario)\",\"link\":\"\"}", "website": "", "review_rating": "4.500000", "review_count": "58", "emails": ""}, {"title": "Bar Castaños", "category": "Bar", "address": "Av. de Portugal, n 90, 28935 Móstoles, Madrid", "phone": "638 24 30 87", "url": "", "owner": "Bar Castaños", "street": "Av. de Portugal, n 90", "city": "Mostoles", "postal_code": "28935", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"112094419218712490098\",\"name\":\"Bar Castaños (propietario)\",\"link\":\"https://www.google.com/maps/contrib/112094419218712490098\"}", "website": "", "review_rating": "4.700000", "review_count": "246", "emails": ""}, {"title": "Bar Mirabel", "category": "Bar de tapas", "address": "C. Pintor Murillo, 18, 28935 Móstoles, Madrid", "phone": "637 04 07 11", "url": "", "owner": "Bar Mirabel", "street": "C. Pintor Murillo, 18", "city": "Mostoles", "postal_code": "28935", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"\",\"name\":\"Bar Mirabel (propietario)\",\"link\":\"\"}", "website": "", "review_rating": "4.500000", "review_count": "552", "emails": ""}, {"title": "Bar Alexander.Flipao", "category": "Bar", "address": "C. de Simón Hernández, 62, 28937 Móstoles, Madrid", "phone": "674 72 54 06", "url": "", "owner": "Bar Alexander.Flipao", "street": "C. de Simon Hernandez, 62", "city": "Mostoles", "postal_code": "28937", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"113464870413558084178\",\"name\":\"Bar Alexander.Flipao (propietario)\",\"link\":\"https://www.google.com/maps/contrib/113464870413558084178\"}", "website": "", "review_rating": "4.600000", "review_count": "55", "emails": ""}, {"title": "Bar la Fuente del Sauco", "category": "Bar de tapas", "address": "C. Río Segura, 8, 28935 Móstoles, Madrid", "phone": "917 70 27 65", "url": "", "owner": "Bar la Fuente del Sauco", "street": "C. Rio Segura, 8", "city": "Mostoles", "postal_code": "28935", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"112224026711322299640\",\"name\":\"Bar la Fuente del Sauco (propietario)\",\"link\":\"https://www.google.com/maps/contrib/112224026711322299640\"}", "website": "", "review_rating": "4.100000", "review_count": "519", "emails": ""}, {"title": "Bar La Cuesta", "category": "Bar", "address": "C. Cta. de la Virgen, 7, 28931 Móstoles, Madrid", "phone": "640 78 70 58", "url": "", "owner": "Bar La Cuesta", "street": "C. Cta. de la Virgen, 7", "city": "Mostoles", "postal_code": "28931", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"109943311159974234217\",\"name\":\"Bar La Cuesta (propietario)\",\"link\":\"https://www.google.com/maps/contrib/109943311159974234217\"}", "website": "", "review_rating": "4.400000", "review_count": "211", "emails": ""}, {"title": "KM 18 Mostoles TAPAS Y TRAGOS", "category": "Bar", "address": "C. Río Segura, 30, 28935 Móstoles, Madrid", "phone": "643 04 63 28", "url": "https://www.instagram.com/km18_mostole?utm_source=qr", "owner": "KM 18 Mostoles TAPAS Y TRAGOS", "street": "C. Rio Segura, 30", "city": "Mostoles", "postal_code": "28935", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"107541161456265219306\",\"name\":\"KM 18 Mostoles TAPAS Y TRAGOS (propietario)\",\"link\":\"https://www.google.com/maps/contrib/107541161456265219306\"}", "website": "https://www.instagram.com/km18_mostole?utm_source=qr", "review_rating": "5.000000", "review_count": "4", "emails": ""}, {"title": "Taberna Gobana", "category": "Restaurante", "address": "Calle Cdad. Dolores Hidalgo, 20, 28931 Móstoles, Madrid", "phone": "649 94 93 69", "url": "https://taberna-gobana.makro.rest/", "owner": "Taberna Gobana", "street": "Calle Cdad. Dolores Hidalgo, 20", "city": "Mostoles", "postal_code": "28931", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"101516007314857650319\",\"name\":\"Taberna Gobana (propietario)\",\"link\":\"https://www.google.com/maps/contrib/101516007314857650319\"}", "website": "https://taberna-gobana.makro.rest/", "review_rating": "4.100000", "review_count": "328", "emails": ""}, {"title": "Cervecería Salamanca", "category": "Cervecería", "address": "C. de las Palmas, 58, 28938 Móstoles, Madrid", "phone": "916 14 44 54", "url": "", "owner": "Cervecería Salamanca", "street": "C. de las Palmas, 58", "city": "Mostoles", "postal_code": "28938", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"114450671580548555605\",\"name\":\"Cervecería Salamanca (propietario)\",\"link\":\"https://www.google.com/maps/contrib/114450671580548555605\"}", "website": "", "review_rating": "4.300000", "review_count": "899", "emails": ""}, {"title": "Bar La Asturiana Cafeteria", "category": "Bar", "address": "Calle Parque Vosa, 27, 28933 Móstoles, Madrid", "phone": "912 38 35 36", "url": "", "owner": "Bar La Asturiana Cafeteria", "street": "Calle Parque Vosa, 27", "city": "Mostoles", "postal_code": "28933", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"104410202152859215578\",\"name\":\"Bar La Asturiana Cafeteria (propietario)\",\"link\":\"https://www.google.com/maps/contrib/104410202152859215578\"}", "website": "", "review_rating": "4.700000", "review_count": "40", "emails": ""}, {"title": "Cafeteria Samoa", "category": "Cafetería", "address": "C. Moraleja de Enmedio, 28938 Móstoles, Madrid", "phone": "633 33 18 13", "url": "", "owner": "Cafeteria Samoa", "street": "C. Moraleja de Enmedio", "city": "Mostoles", "postal_code": "28938", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"\",\"name\":\"Cafeteria Samoa (propietario)\",\"link\":\"\"}", "website": "", "review_rating": "4.300000", "review_count": "315", "emails": ""}, {"title": "Bocatas Lunaa", "category": "Cafetería", "address": "C. Huesca, 19, 28934 Móstoles, Madrid", "phone": "654 87 01 65", "url": "", "owner": "Bocatas Lunaa", "street": "C. Huesca, 19", "city": "Mostoles", "postal_code": "28934", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"110023271505976825184\",\"name\":\"Bocatas Lunaa (propietario)\",\"link\":\"https://www.google.com/maps/contrib/110023271505976825184\"}", "website": "", "review_rating": "5.000000", "review_count": "3", "emails": ""}, {"title": "Cafetería Ortiz", "category": "Cafetería", "address": "C. del Río Genil, 17, 28934 Móstoles, Madrid", "phone": "916 47 40 59", "url": "", "owner": "Cafetería Ortiz", "street": "C. del Rio Genil, 17", "city": "Mostoles", "postal_code": "28934", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"\",\"name\":\"Cafetería Ortiz (propietario)\",\"link\":\"\"}", "website": "", "review_rating": "4.400000", "review_count": "161", "emails": ""}, {"title": "Cafetería El Capricho", "category": "Cafetería", "address": "Pl. del Turia, 5, 28934 Móstoles, Madrid", "phone": "912 39 11 00", "url": "", "owner": "Cafetería El Capricho", "street": "Pl. del Turia, 5", "city": "Mostoles", "postal_code": "28934", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"108453272833594457001\",\"name\":\"Cafetería El Capricho (propietario)\",\"link\":\"https://www.google.com/maps/contrib/108453272833594457001\"}", "website": "", "review_rating": "4.200000", "review_count": "666", "emails": ""}, {"title": "CAFETERIA IZAMARA", "category": "Cafetería", "address": "Av. del dos de Mayo, 27, 28934 Móstoles, Madrid", "phone": "639 95 77 30", "url": "https://omaps.top/cafeteria-izamara", "owner": "CAFETERIA IZAMARA", "street": "Av. del dos de Mayo, 27", "city": "Mostoles", "postal_code": "28934", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"\",\"name\":\"CAFETERIA IZAMARA (propietario)\",\"link\":\"\"}", "website": "https://omaps.top/cafeteria-izamara", "review_rating": "4.100000", "review_count": "208", "emails": ""}, {"title": "Cafetería-Heladeria Ruma Meca", "category": "Cafetería", "address": "Av. del dos de Mayo, 25, 28934 Móstoles, Madrid", "phone": "912 38 50 62", "url": "https://www.facebook.com/heladeriarumameca", "owner": "Cafetería-Heladeria Ruma Meca", "street": "Av. del dos de Mayo, 25", "city": "Mostoles", "postal_code": "28934", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"112463515639409528092\",\"name\":\"Cafetería-Heladeria Ruma Meca (propietario)\",\"link\":\"https://www.google.com/maps/contrib/112463515639409528092\"}", "website": "https://www.facebook.com/heladeriarumameca", "review_rating": "4.300000", "review_count": "687", "emails": ""}, {"title": "Kebab Kurdistan", "category": "Restaurante de comida rápida", "address": "P.º de Arroyomolinos, 21, 28938 Móstoles, Madrid", "phone": "919 47 53 93", "url": "", "owner": "Kebab Kurdistan", "street": "P.º de Arroyomolinos, 21", "city": "Mostoles", "postal_code": "28938", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"100155377938057392049\",\"name\":\"Kebab Kurdistan (propietario)\",\"link\":\"https://www.google.com/maps/contrib/100155377938057392049\"}", "website": "", "review_rating": "3.800000", "review_count": "62", "emails": ""}, {"title": "Sofía's Café", "category": "Cafetería", "address": "C. Antonio Hernández, 11, 28931 Móstoles, Madrid", "phone": "627 07 95 13", "url": "https://instagram.com/andrius.cafe?igshid=NjIwNzIyMDk2Mg==", "owner": "Sofía's Café", "street": "C. Antonio Hernandez, 11", "city": "Mostoles", "postal_code": "28931", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"100068699826080119038\",\"name\":\"Sofía's Café (propietario)\",\"link\":\"https://www.google.com/maps/contrib/100068699826080119038\"}", "website": "https://instagram.com/andrius.cafe?igshid=NjIwNzIyMDk2Mg==", "review_rating": "4.700000", "review_count": "163", "emails": ""}, {"title": "Bar Cafetería El Bosque", "category": "Bar", "address": "C. Teruel, 3, 28934 Móstoles, Madrid", "phone": "633 67 57 50", "url": "", "owner": "Bar Cafetería El Bosque", "street": "C. Teruel, 3", "city": "Mostoles", "postal_code": "28934", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"108827561060125001713\",\"name\":\"Bar Cafetería El Bosque (propietario)\",\"link\":\"https://www.google.com/maps/contrib/108827561060125001713\"}", "website": "", "review_rating": "4.600000", "review_count": "47", "emails": ""}, {"title": "Luni Garden", "category": "Cafetería", "address": "C. Nueva York, 34, 28938 Móstoles, Madrid", "phone": "645 04 20 76", "url": "https://instagram.com/lunigarden?igshid=YmMyMTA2M2Y=", "owner": "Luni Garden", "street": "C. Nueva York, 34", "city": "Mostoles", "postal_code": "28938", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"115203321496938061633\",\"name\":\"Luni Garden (propietario)\",\"link\":\"https://www.google.com/maps/contrib/115203321496938061633\"}", "website": "https://instagram.com/lunigarden?igshid=YmMyMTA2M2Y=", "review_rating": "4.800000", "review_count": "1156", "emails": ""}, {"title": "Coffee Gins", "category": "Coctelería", "address": "Av. de Portugal, 63, 28934 Móstoles, Madrid", "phone": "688 07 30 63", "url": "https://coffeegins.es/", "owner": "Coffee Gins", "street": "Av. de Portugal, 63", "city": "Mostoles", "postal_code": "28934", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"113116353236532564228\",\"name\":\"Coffee Gins (propietario)\",\"link\":\"https://www.google.com/maps/contrib/113116353236532564228\"}", "website": "https://coffeegins.es/", "review_rating": "4.400000", "review_count": "497", "emails": ""}, {"title": "Los Reyunos. Pastelerías, Panaderías, Cafeterías - Casa Central.", "category": "Pastelería", "address": "C. Moraleja de Enmedio, 8, 28938 Móstoles, Madrid", "phone": "916 45 96 99", "url": "http://www.losreyunos.es/", "owner": "Los Reyunos. Pastelerías, Panaderías, Cafeterías - Casa Central.", "street": "C. Moraleja de Enmedio, 8", "city": "Mostoles", "postal_code": "28938", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"116394910127395248170\",\"name\":\"Los Reyunos. Pastelerías, Panaderías, Cafeterías - Casa Central. (propietario)\",\"link\":\"https://www.google.com/maps/contrib/116394910127395248170\"}", "website": "http://www.losreyunos.es/", "review_rating": "4.100000", "review_count": "3003", "emails": ""}, {"title": "Los Reyunos. Pastelerías, Panaderías, Cafeterías - Sucursal Pradillo", "category": "Pastelería", "address": "Av. del dos de Mayo, 12, 28931 Móstoles, Madrid", "phone": "916 17 25 17", "url": "http://www.losreyunos.es/", "owner": "Los Reyunos. Pastelerías, Panaderías, Cafeterías - Sucursal Pradillo", "street": "Av. del dos de Mayo, 12", "city": "Mostoles", "postal_code": "28931", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"104780035905383051848\",\"name\":\"Los Reyunos. Pastelerías, Panaderías, Cafeterías - Sucursal Pradillo (propietario)\",\"link\":\"https://www.google.com/maps/contrib/104780035905383051848\"}", "website": "http://www.losreyunos.es/", "review_rating": "4.100000", "review_count": "1422", "emails": ""}, {"title": "Cafeteria Anzaira", "category": "Bar", "address": "C. Cartaya, 6, 28938 Móstoles, Madrid", "phone": "912 38 82 06", "url": "", "owner": "Cafeteria Anzaira", "street": "C. Cartaya, 6", "city": "Mostoles", "postal_code": "28938", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"103161070263634087155\",\"name\":\"Cafeteria Anzaira (propietario)\",\"link\":\"https://www.google.com/maps/contrib/103161070263634087155\"}", "website": "", "review_rating": "4.300000", "review_count": "436", "emails": ""}, {"title": "Cafetería Nuevo Bom-Bón", "category": "Cafetería", "address": "C. Río Segre, 2, 28935 Móstoles, Madrid", "phone": "919 91 69 02", "url": "https://cafeterianuevobom-bon.eatbu.com/", "owner": "Cafetería Nuevo Bom-Bón", "street": "C. Rio Segre, 2", "city": "Mostoles", "postal_code": "28935", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"103052499219758600813\",\"name\":\"Cafetería Nuevo Bom-Bón (propietario)\",\"link\":\"https://www.google.com/maps/contrib/103052499219758600813\"}", "website": "https://cafeterianuevobom-bon.eatbu.com/", "review_rating": "4.600000", "review_count": "83", "emails": ""}, {"title": "Cafetería MAVE", "category": "Cafetería", "address": "C. de Azorín, 2, 28935 Móstoles, Madrid", "phone": "910 33 43 69", "url": "https://www.facebook.com/Cafeteria-Mave-1436306356620663", "owner": "Cafetería MAVE", "street": "C. de Azorin, 2", "city": "Mostoles", "postal_code": "28935", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"\",\"name\":\"Cafetería MAVE (propietario)\",\"link\":\"\"}", "website": "https://www.facebook.com/Cafeteria-Mave-1436306356620663", "review_rating": "4.500000", "review_count": "301", "emails": ""}, {"title": "Cafeteria Cedillo Hnos", "category": "Cafetería", "address": "C. Cam. de Humanes, 28938 Móstoles, Madrid", "phone": "910 00 00 00", "url": "", "owner": "Cafeteria Cedillo Hnos", "street": "C. Cam. de Humanes", "city": "Mostoles", "postal_code": "28938", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"112674366444804440361\",\"name\":\"Cafeteria Cedillo Hnos (propietario)\",\"link\":\"https://www.google.com/maps/contrib/112674366444804440361\"}", "website": "", "review_rating": "4.300000", "review_count": "135", "emails": ""}, {"title": "Family's Coffee", "category": "Cafetería", "address": "Av. de Portugal, 30, 28933 Móstoles, Madrid", "phone": "643 55 49 26", "url": "", "owner": "Family's Coffee", "street": "Av. de Portugal, 30", "city": "Mostoles", "postal_code": "28933", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"112348637432489895333\",\"name\":\"Family's Coffee (propietario)\",\"link\":\"https://www.google.com/maps/contrib/112348637432489895333\"}", "website": "", "review_rating": "4.500000", "review_count": "98", "emails": ""}, {"title": "Cafetería Restaurante El Risveglio", "category": "Bar restaurante", "address": "Calle Cámara de la Industria, 20, 28938 Móstoles, Madrid", "phone": "919 19 34 05", "url": "https://cafeteriarestauranteelrisveglio.shop/", "owner": "Cafetería Restaurante El Risveglio", "street": "Calle Camara de la Industria, 20", "city": "Mostoles", "postal_code": "28938", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"114053524510536881002\",\"name\":\"Cafetería Restaurante El Risveglio (propietario)\",\"link\":\"https://www.google.com/maps/contrib/114053524510536881002\"}", "website": "https://cafeteriarestauranteelrisveglio.shop/", "review_rating": "4.000000", "review_count": "2064", "emails": ""}, {"title": "cafeteria cerveceria crisol", "category": "Cafetería", "address": "C. de Azorín, 11, 28935 Móstoles, Madrid", "phone": "647 83 54 66", "url": "", "owner": "cafeteria cerveceria crisol", "street": "C. de Azorin, 11", "city": "Mostoles", "postal_code": "28935", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"\",\"name\":\"cafeteria cerveceria crisol (propietario)\",\"link\":\"\"}", "website": "", "review_rating": "4.700000", "review_count": "57", "emails": ""}, {"title": "Cafe alsser", "category": "Cafetería", "address": "C. Pintor Velazquez, 75, 28935 Móstoles, Madrid", "phone": "910 70 93 45", "url": "", "owner": "Cafe alsser", "street": "C. Pintor Velazquez, 75", "city": "Mostoles", "postal_code": "28935", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"\",\"name\":\"Cafe alsser (propietario)\",\"link\":\"\"}", "website": "", "review_rating": "4.700000", "review_count": "45", "emails": ""}, {"title": "Panettone", "category": "Cafetería", "address": "C. de Perseo, 09, 28938 Móstoles, Madrid", "phone": "919 47 03 94", "url": "http://www.panettonemostoles.com/", "owner": "Panettone", "street": "C. de Perseo, 09", "city": "Mostoles", "postal_code": "28938", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"100868202656070966052\",\"name\":\"Panettone (propietario)\",\"link\":\"https://www.google.com/maps/contrib/100868202656070966052\"}", "website": "http://www.panettonemostoles.com/", "review_rating": "4.400000", "review_count": "362", "emails": ""}, {"title": "El cafe de Yolanda", "category": "Restaurante", "address": "Av. de Portugal, 49, 28931 Móstoles, Madrid", "phone": "919 47 97 77", "url": "https://www.menualdia.es/elcaf%C3%A9deyolanda.html", "owner": "El cafe de Yolanda", "street": "Av. de Portugal, 49", "city": "Mostoles", "postal_code": "28931", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"101904487969079249555\",\"name\":\"El cafe de Yolanda (propietario)\",\"link\":\"https://www.google.com/maps/contrib/101904487969079249555\"}", "website": "https://www.menualdia.es/elcaf%C3%A9deyolanda.html", "review_rating": "4.700000", "review_count": "29", "emails": ""}, {"title": "La Tasquita", "category": "Bar", "address": "C. de los Órganos, 1, 28931 Móstoles, Madrid", "phone": "616 98 15 16", "url": "", "owner": "La Tasquita", "street": "C. de los Organos, 1", "city": "Mostoles", "postal_code": "28931", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"100808730985004034577\",\"name\":\"La Tasquita (propietario)\",\"link\":\"https://www.google.com/maps/contrib/100808730985004034577\"}", "website": "", "review_rating": "4.100000", "review_count": "437", "emails": ""}, {"title": "Bar Marisquería Tres Hermanos", "category": "Restaurante especializado en rape", "address": "C. Río Tormes, s/n, 28935 Móstoles, Madrid", "phone": "912 62 90 87", "url": "https://www.barmarisqueriatreshermanos.es/", "owner": "Bar Marisquería Tres Hermanos", "street": "C. Rio Tormes, s/n", "city": "Mostoles", "postal_code": "28935", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"116174221088251915553\",\"name\":\"Bar Marisquería Tres Hermanos (propietario)\",\"link\":\"https://www.google.com/maps/contrib/116174221088251915553\"}", "website": "https://www.barmarisqueriatreshermanos.es/", "review_rating": "4.400000", "review_count": "1522", "emails": ""}, {"title": "La Tomasa", "category": "Taberna", "address": "C. Ávila, 45, 28937 Móstoles, Madrid", "phone": "919 95 60 11", "url": "http://taberna-la-tomasa-mostoles.makro.rest/", "owner": "La Tomasa", "street": "C. Avila, 45", "city": "Mostoles", "postal_code": "28937", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"115096165357386246284\",\"name\":\"La Tomasa (propietario)\",\"link\":\"https://www.google.com/maps/contrib/115096165357386246284\"}", "website": "http://taberna-la-tomasa-mostoles.makro.rest/", "review_rating": "4.600000", "review_count": "140", "emails": ""}, {"title": "Trattoria Dove Andiamo?", "category": "Restaurante italiano", "address": "C. Nápoles, 43, 28938 Móstoles, Madrid", "phone": "918 28 40 59", "url": "http://www.doveandiamo.es/", "owner": "Trattoria Dove Andiamo?", "street": "C. Napoles, 43", "city": "Mostoles", "postal_code": "28938", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"110995823229125446496\",\"name\":\"Trattoria Dove Andiamo? (propietario)\",\"link\":\"https://www.google.com/maps/contrib/110995823229125446496\"}", "website": "http://www.doveandiamo.es/", "review_rating": "4.700000", "review_count": "1302", "emails": ""}, {"title": "El Gueridón", "category": "Restaurante", "address": "Carretera Mostoles-Villaviciosa de Odon Km. 0,200, Ctra. de Móstoles a Villaviciosa, Km 0,200, 28931 Móstoles, Madrid", "phone": "916 14 06 69", "url": "http://www.hotelciudaddemostoles.es/", "owner": "El Gueridón", "street": "Carretera Mostoles-Villaviciosa de Odon Km. 0,200, Ctra. de Mostoles a Villaviciosa, Km 0,200", "city": "Mostoles", "postal_code": "28931", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"109133790420022052839\",\"name\":\"El Gueridón (propietario)\",\"link\":\"https://www.google.com/maps/contrib/109133790420022052839\"}", "website": "http://www.hotelciudaddemostoles.es/", "review_rating": "4.700000", "review_count": "50", "emails": ""}, {"title": "Bar la Bodega", "category": "Bar", "address": "Pl. del Turia, 3, 28934 Móstoles, Madrid", "phone": "916 46 37 23", "url": "", "owner": "Bar la Bodega", "street": "Pl. del Turia, 3", "city": "Mostoles", "postal_code": "28934", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"\",\"name\":\"Bar la Bodega (propietario)\",\"link\":\"\"}", "website": "", "review_rating": "4.700000", "review_count": "21", "emails": ""}, {"title": "El Bocadito", "category": "Bar", "address": "C. de las Palmas, 58, 28938 Móstoles, Madrid", "phone": "918 26 36 89", "url": "", "owner": "El Bocadito", "street": "C. de las Palmas, 58", "city": "Mostoles", "postal_code": "28938", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"114793353371686552998\",\"name\":\"El Bocadito (propietario)\",\"link\":\"https://www.google.com/maps/contrib/114793353371686552998\"}", "website": "", "review_rating": "4.200000", "review_count": "313", "emails": ""}, {"title": "Sidrería El Embarcadero", "category": "Restaurante asturiano", "address": "C. Lluvia, 23, 28918 Leganés, Madrid", "phone": "916 10 16 85", "url": "http://www.sidreriaelembarcadero.com/", "owner": "Sidrería El Embarcadero", "street": "C. Lluvia, 23", "city": "Leganes", "postal_code": "28918", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"114875474673449902314\",\"name\":\"Sidrería El Embarcadero (propietario)\",\"link\":\"https://www.google.com/maps/contrib/114875474673449902314\"}", "website": "http://www.sidreriaelembarcadero.com/", "review_rating": "4.100000", "review_count": "521", "emails": ""}, {"title": "Bar La comedia", "category": "Bar", "address": "C. Sevilla, 14, 28931 Móstoles, Madrid", "phone": "919 29 70 65", "url": "", "owner": "Bar La comedia", "street": "C. Sevilla, 14", "city": "Mostoles", "postal_code": "28931", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"\",\"name\":\"Bar La comedia (propietario)\",\"link\":\"\"}", "website": "", "review_rating": "5.000000", "review_count": "4", "emails": ""}, {"title": "Los Cumpas Bar - Restaurant", "category": "Bar", "address": "C. Montero, 25, 28934 Móstoles, Madrid", "phone": "626 70 11 25", "url": "", "owner": "Los Cumpas Bar - Restaurant", "street": "C. Montero, 25", "city": "Mostoles", "postal_code": "28934", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"\",\"name\":\"Los Cumpas Bar - Restaurant (propietario)\",\"link\":\"\"}", "website": "", "review_rating": "5.000000", "review_count": "7", "emails": ""}, {"title": "BAR EL PERGAMINO", "category": "Bar", "address": "C. Canarias, 5, bajo, 28937 Móstoles, Madrid", "phone": "677 13 13 78", "url": "https://mymenuweb.com/es/restaurants/538650/?utm_source=google_profile&utm_medium=google_profile&utm_campaign=admin", "owner": "BAR EL PERGAMINO", "street": "C. Canarias, 5, bajo", "city": "Mostoles", "postal_code": "28937", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"104255341068451013722\",\"name\":\"BAR EL PERGAMINO (propietario)\",\"link\":\"https://www.google.com/maps/contrib/104255341068451013722\"}", "website": "https://mymenuweb.com/es/restaurants/538650/?utm_source=google_profile&utm_medium=google_profile&utm_campaign=admin", "review_rating": "4.700000", "review_count": "46", "emails": ""}, {"title": "GASTROBAR VERDY", "category": "Bar de tapas", "address": "Av. del dos de Mayo, 71, posterior, 28935 Móstoles, Madrid", "phone": "624 81 56 10", "url": "", "owner": "GASTROBAR VERDY", "street": "Av. del dos de Mayo, 71, posterior", "city": "Mostoles", "postal_code": "28935", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"105131669886211815888\",\"name\":\"GASTROBAR VERDY (propietario)\",\"link\":\"https://www.google.com/maps/contrib/105131669886211815888\"}", "website": "", "review_rating": "4.200000", "review_count": "5", "emails": ""}, {"title": "De 5 Bar", "category": "Snack bar", "address": "C. Río Tormes, 17, 28935 Móstoles, Madrid", "phone": "663 36 80 83", "url": "http://de5bar.eatbu.com/", "owner": "De 5 Bar", "street": "C. Rio Tormes, 17", "city": "Mostoles", "postal_code": "28935", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"106028475871021877835\",\"name\":\"De 5 Bar (propietario)\",\"link\":\"https://www.google.com/maps/contrib/106028475871021877835\"}", "website": "http://de5bar.eatbu.com/", "review_rating": "4.900000", "review_count": "26", "emails": ""}, {"title": "Cervecería El Roto", "category": "Cervecería", "address": "C. Orense, 3, 28934 Móstoles, Madrid", "phone": "643 57 09 47", "url": "", "owner": "Cervecería El Roto", "street": "C. Orense, 3", "city": "Mostoles", "postal_code": "28934", "state": "Madrid", "country": "ES", "raw_owner": "{\"id\":\"108697222390744122119\",\"name\":\"Cervecería El Roto (propietario)\",\"link\":\"https://www.google.com/maps/contrib/108697222390744122119\"}", "website": "", "review_rating": "4.500000", "review_count": "87", "emails": ""}];
+        const groups = [{"title": "Restaurante Raul", "reason": "Nombre similar (sucursales), Mismo dueño registrado: Restaurante Raul, Bar Cervecería Raúl C.B., Comparten teléfono", "places": [{"title": "Restaurante Raul", "category": "Restaurante", "phone": "914 96 91 16", "street": "C. Napoles, 3", "city": "Mostoles", "website": "", "url": "", "emails": ""}, {"title": "Bar Cervecería Raúl C.B.", "category": "Bar de tapas", "phone": "914 96 91 16", "street": "C. Roma, 8, y 10", "city": "Mostoles", "website": "", "url": "", "emails": ""}], "emails": [], "websites": []}, {"title": "Los Reyunos. Pastelerías, Panaderías, Cafeterías - Sucursal Pradillo", "reason": "Nombre similar (sucursales), Mismo dueño registrado: Los Reyunos. Pastelerías, Panaderías, Cafeterías - Sucursal Pradillo, Los Reyunos. Pastelerías, Panaderías, Cafeterías - Casa Central., Comparten dominio web: losreyunos.es", "places": [{"title": "Los Reyunos. Pastelerías, Panaderías, Cafeterías - Casa Central.", "category": "Pastelería", "phone": "916 45 96 99", "street": "C. Moraleja de Enmedio, 8", "city": "Mostoles", "website": "http://www.losreyunos.es/", "url": "http://www.losreyunos.es/", "emails": ""}, {"title": "Los Reyunos. Pastelerías, Panaderías, Cafeterías - Sucursal Pradillo", "category": "Pastelería", "phone": "916 17 25 17", "street": "Av. del dos de Mayo, 12", "city": "Mostoles", "website": "http://www.losreyunos.es/", "url": "http://www.losreyunos.es/", "emails": ""}], "emails": [], "websites": ["http://www.losreyunos.es/", "http://www.losreyunos.es/"]}];
+
+        // Initialize tabs
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Populate Category Filter
+        const categories = [...new Set(records.map(r => r.category).filter(Boolean))].sort();
+        const catSelect = document.getElementById('category-select');
+        categories.forEach(cat => {
+            const opt = document.createElement('option');
+            opt.value = cat;
+            opt.textContent = cat;
+            catSelect.appendChild(opt);
+        });
+
+        // Render Table
+        function renderTable(data) {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+            
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">No se encontraron resultados</td></tr>';
+                return;
+            }
+            
+            data.forEach(r => {
+                const tr = document.createElement('tr');
+                
+                const webCell = r.url ? `<a href="${r.url}" target="_blank" class="badge badge-web">Visitar Web</a>` : '-';
+                const emailCell = r.emails ? `<span class="badge badge-email">${r.emails}</span>` : '-';
+                
+                tr.innerHTML = `
+                    <td style="font-weight: 500;">${r.title}</td>
+                    <td>${r.category}</td>
+                    <td><a href="tel:${r.phone.replace(/\s+/g, '')}">${r.phone}</a></td>
+                    <td>${webCell}</td>
+                    <td>${emailCell}</td>
+                    <td style="color: var(--text-muted); font-size: 0.85rem;">${r.street}, ${r.city}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Filter Table on search/select
+        function onFilterChange() {
+            const searchVal = document.getElementById('search-input').value.toLowerCase().trim();
+            const catVal = document.getElementById('category-select').value;
+            
+            const filtered = records.filter(r => {
+                const matchesSearch = !searchVal || 
+                    (r.title && r.title.toLowerCase().includes(searchVal)) ||
+                    (r.address && r.address.toLowerCase().includes(searchVal)) ||
+                    (r.phone && r.phone.includes(searchVal)) ||
+                    (r.emails && r.emails.toLowerCase().includes(searchVal)) ||
+                    (r.owner && r.owner.toLowerCase().includes(searchVal));
+                    
+                const matchesCat = !catVal || r.category === catVal;
+                
+                return matchesSearch && matchesCat;
+            });
+            
+            renderTable(filtered);
+        }
+
+        // Render Clusters
+        function renderClusters() {
+            const container = document.getElementById('clusters-list');
+            container.innerHTML = '';
+            
+            if (groups.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 3rem; background-color: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color);">No se identificaron clusters o locales agrupados.</div>';
+                return;
+            }
+            
+            groups.forEach(g => {
+                const card = document.createElement('div');
+                card.className = 'cluster-card';
+                let placesHtml = '';
+                g.places.forEach(p => {
+                    const web = p.website ? `<a href="${p.website}" target="_blank">Web</a>` : '-';
+                    const email = p.emails ? `<span class="badge badge-email">${p.emails}</span>` : '-';
+                    placesHtml += `
+                        <tr>
+                            <td style="font-weight: 500; font-size: 0.9rem;">${p.title}</td>
+                            <td style="font-size: 0.9rem;">${p.category}</td>
+                            <td style="font-size: 0.9rem;">${p.phone}</td>
+                            <td style="color: var(--text-muted); font-size: 0.85rem;">${p.street}, ${p.city}</td>
+                            <td style="font-size: 0.9rem;">${web}</td>
+                            <td style="font-size: 0.9rem;">${email}</td>
+                        </tr>
+                    `;
+                });
+                
+                card.innerHTML = `
+                    <div class="cluster-header">
+                        <div class="cluster-title">${g.title}</div>
+                        <span class="cluster-reason">${g.reason}</span>
+                    </div>
+                    <div class="cluster-places-table">
+                        <table style="background-color: rgba(255,255,255,0.01);">
+                            <thead>
+                                <tr>
+                                    <th>Establecimiento</th>
+                                    <th>Categoría</th>
+                                    <th>Teléfono</th>
+                                    <th>Dirección</th>
+                                    <th>Web</th>
+                                    <th>Correo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${placesHtml}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Load Initial View
+        renderTable(records);
+        renderClusters();
+    </script>
+</body>
+</html>
