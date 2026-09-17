@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informe de Prospección - Parla</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #111827;
+            --text-color: #f3f4f6;
+            --text-muted: #9ca3af;
+            --primary: #10b981;
+            --primary-glow: rgba(16, 185, 129, 0.15);
+            --secondary: #3b82f6;
+            --border-color: rgba(255, 255, 255, 0.05);
+            --hover-bg: rgba(255, 255, 255, 0.02);
+            --accent: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1f2937, #111827);
+            border: 1px solid var(--border-color);
+            padding: 2.5rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #10b981, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta-paragraph {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 900px;
+            margin-bottom: 1.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background-color: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.05);
+        }
+
+        .stat-val {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-lbl {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.75rem;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            font-weight: 500;
+            padding: 0.5rem 1.5rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-color);
+        }
+
+        .tab-btn.active {
+            color: var(--text-color);
+            background-color: var(--primary-glow);
+            border: 1px solid var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Table view styling */
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-box, .filter-select {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-box:focus, .filter-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        .table-container {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow-x: auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.95rem;
+        }
+
+        th {
+            background-color: rgba(255, 255, 255, 0.02);
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        tr:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .badge-email {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--primary);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .badge-web {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--secondary);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .badge-gmaps {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .badge-gmaps:hover {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+
+        /* Cluster View styling */
+        .clusters-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .cluster-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: border-color 0.3s ease;
+        }
+
+        .cluster-card:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .cluster-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+
+        .cluster-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .cluster-reason {
+            color: var(--accent);
+            font-size: 0.85rem;
+            font-weight: 500;
+            background-color: rgba(245, 158, 11, 0.08);
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .cluster-places-table {
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .cluster-strategy {
+            background-color: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--border-color);
+            padding: 1.25rem;
+            border-radius: 10px;
+        }
+
+        .cluster-strategy h4 {
+            color: var(--primary);
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .cluster-strategy ul {
+            list-style: none;
+        }
+
+        .cluster-strategy li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .cluster-strategy li::before {
+            content: '➔';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+        }
+
+        .email-tag {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        /* Responsive & Mobile Enhancements */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem 0.75rem;
+            }
+
+            header {
+                padding: 1.5rem 1.25rem;
+                margin-bottom: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+                line-height: 1.2;
+            }
+
+            .meta-paragraph {
+                font-size: 0.95rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.75rem;
+            }
+
+            .stat-card {
+                padding: 1rem 0.75rem;
+            }
+
+            .stat-val {
+                font-size: 1.5rem;
+            }
+
+            .stat-lbl {
+                font-size: 0.75rem;
+            }
+
+            .tabs {
+                gap: 0.5rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .tab-btn {
+                flex: 1;
+                font-size: 0.95rem;
+                padding: 0.6rem 0.5rem;
+                text-align: center;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .search-box, .filter-select {
+                width: 100%;
+                font-size: 0.95rem;
+                padding: 0.75rem;
+            }
+
+            th, td {
+                padding: 0.75rem 0.85rem;
+                font-size: 0.85rem;
+            }
+
+            .badge {
+                padding: 0.35rem 0.6rem;
+                font-size: 0.75rem;
+                white-space: nowrap;
+            }
+
+            .cluster-card {
+                padding: 1.25rem;
+            }
+
+            .cluster-title {
+                font-size: 1.25rem;
+            }
+
+            .cluster-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Informe Comercial de Hostelería</h1>
+            <p class="meta-paragraph">
+                Prospección comercial y análisis de leads de hostelería en la provincia de <strong>Comunidad De Madrid</strong>, 
+                municipio de <strong>Parla</strong>, cubriendo el sector <strong>Municipio de Parla</strong>. 
+                Los datos contienen la información de contacto filtrada y estructurada para campañas de prospección.
+            </p>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-val">74</div>
+                    <div class="stat-lbl">Locales Filtrados</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-val">0</div>
+                    <div class="stat-lbl">Con Correo</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-val">40</div>
+                    <div class="stat-lbl">Con Sitio Web</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-val">3</div>
+                    <div class="stat-lbl">Grupos / Cadenas</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('table-tab')">Listado de Locales</button>
+            <button class="tab-btn" onclick="switchTab('clusters-tab')">Análisis de Clusters</button>
+        </div>
+
+        <!-- Table Tab -->
+        <div id="table-tab" class="tab-content active">
+            <div class="controls">
+                <input type="text" id="search-input" class="search-box" placeholder="Buscar por nombre, dirección, teléfono, correo..." oninput="onFilterChange()">
+                <select id="category-select" class="filter-select" onchange="onFilterChange()">
+                    <option value="">Todas las categorías</option>
+                </select>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Establecimiento</th>
+                            <th>Categoría</th>
+                            <th>Teléfono</th>
+                            <th>Web / URL</th>
+                            <th>Google Maps</th>
+                            <th>Correo</th>
+                            <th>Dirección</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <!-- Filled by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Clusters Tab -->
+        <div id="clusters-tab" class="tab-content">
+            <div id="clusters-list" class="clusters-container">
+                <!-- Filled by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const records = [{"title": "Bar restaurante Toma'te Dos", "category": "Bar restaurante", "address": "C. Jaime I el Conquistador, 43, 28982 Parla, Madrid", "phone": "616 97 29 91", "url": "", "owner": "Bar restaurante Toma'te Dos", "street": "C. Jaime I el Conquistador, 43", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Bar+restaurante+Toma%27te+Dos/data=!4m7!3m6!1s0xd41f5c4efeec0bb:0x4a592619e23d8f0a!8m2!3d40.234925!4d-3.7652159!16s%2Fg%2F11sjz5x6sk!19sChIJu8Du78T1QQ0RCo894hkmWUo?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"112811570829891769587\",\"name\":\"Bar restaurante Toma'te Dos (propietario)\",\"link\":\"https://www.google.com/maps/contrib/112811570829891769587\"}", "website": "", "review_rating": "4.600000", "review_count": "126", "emails": ""}, {"title": "Trujillo Restaurante", "category": "Restaurante", "address": "C. del Rio Jordan, 18, 28981 Parla, Madrid", "phone": "916 05 09 24", "url": "https://restaurante.amecorp.org/", "owner": "Trujillo Restaurante", "street": "C. del Rio Jordan, 18", "city": "Parla", "postal_code": "28981", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Trujillo+Restaurante/data=!4m7!3m6!1s0xd41f52f57939513:0x5dd317443b945df4!8m2!3d40.2371982!4d-3.7784815!16s%2Fg%2F1tmqn233!19sChIJE5WTVy_1QQ0R9F2UO0QX010?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"110613550603350809268\",\"name\":\"Trujillo Restaurante (propietario)\",\"link\":\"https://www.google.com/maps/contrib/110613550603350809268\"}", "website": "https://restaurante.amecorp.org/", "review_rating": "4.600000", "review_count": "1281", "emails": ""}, {"title": "Bar Lote 109 Comida Colombiana", "category": "Restaurante", "address": "C. San Roque, 76, 28982 Parla, Madrid", "phone": "911 53 15 51", "url": "", "owner": "Bar Lote 109 Comida Colombiana", "street": "C. San Roque, 76", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Bar+Lote+109+Comida+Colombiana/data=!4m7!3m6!1s0xd41f52142d366c7:0x88811ede955853c5!8m2!3d40.2365493!4d-3.7665445!16s%2Fg%2F11vm8lm8kt!19sChIJx2bTQiH1QQ0RxVNYld4egYg?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"107414186979116224358\",\"name\":\"Bar Lote 109 Comida Colombiana (propietario)\",\"link\":\"https://www.google.com/maps/contrib/107414186979116224358\"}", "website": "", "review_rating": "4.700000", "review_count": "225", "emails": ""}, {"title": "Bendita Lokura", "category": "Bar restaurante", "address": "Calle del Planeta Júpiter, 8, Loc 2, 28983 Parla, Madrid", "phone": "915 17 34 12", "url": "", "owner": "Bendita Lokura", "street": "Calle del Planeta Jupiter, 8, Loc 2", "city": "Parla", "postal_code": "28983", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Bendita+Lokura/data=!4m7!3m6!1s0xd41f5e364fb5a15:0x7688d7430fddcd60!8m2!3d40.2183895!4d-3.7579831!16s%2Fg%2F11r7hc8q3b!19sChIJFVr7ZOP1QQ0RYM3dD0PXiHY?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"109140443174604146304\",\"name\":\"Bendita Lokura (propietario)\",\"link\":\"https://www.google.com/maps/contrib/109140443174604146304\"}", "website": "", "review_rating": "4.100000", "review_count": "728", "emails": ""}, {"title": "ROCKAS VIVAS", "category": "Vinoteca", "address": "C. Torrejón, 40, Loc 1, 28982 Parla, Madrid", "phone": "915 57 07 46", "url": "https://www.instagram.com/rockasvivasvinoteca?igsh=eXFwbmRoNmttOHlq", "owner": "ROCKAS VIVAS", "street": "C. Torrejon, 40, Loc 1", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/ROCKAS+VIVAS/data=!4m7!3m6!1s0xd41f50071e226f9:0x483b7085d87ee596!8m2!3d40.2370721!4d-3.7662513!16s%2Fg%2F11yr_t8l3t!19sChIJ-SbicQD1QQ0RluV-2IVwO0g?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"107768662062486580652\",\"name\":\"ROCKAS VIVAS (propietario)\",\"link\":\"https://www.google.com/maps/contrib/107768662062486580652\"}", "website": "https://www.instagram.com/rockasvivasvinoteca?igsh=eXFwbmRoNmttOHlq", "review_rating": "5.000000", "review_count": "17", "emails": ""}, {"title": "La taberna de Roxana Raciones", "category": "Bar restaurante", "address": "C. Reyes Católicos, 17, 28982 Parla, Madrid", "phone": "910 66 68 26", "url": "", "owner": "La taberna de Roxana Raciones", "street": "C. Reyes Catolicos, 17", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/La+taberna+de+Roxana+Raciones/data=!4m7!3m6!1s0xd41f5b36acb09a9:0x5f5f29dbbca5c9b4!8m2!3d40.2320707!4d-3.7703138!16s%2Fg%2F11g0g5gslm!19sChIJqQnLarP1QQ0RtMmlvNspX18?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"103198743380667731031\",\"name\":\"La taberna de Roxana Raciones (propietario)\",\"link\":\"https://www.google.com/maps/contrib/103198743380667731031\"}", "website": "", "review_rating": "4.100000", "review_count": "167", "emails": ""}, {"title": "Majús Restaurante en Parla", "category": "Restaurante", "address": "C. Alfonso X el Sabio, 38, 28982 Parla, Madrid", "phone": "624 04 13 03", "url": "https://restaurante.covermanager.com/majus-restaurante/", "owner": "Majús Restaurante en Parla", "street": "C. Alfonso X el Sabio, 38", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Maj%C3%BAs+Restaurante+en+Parla/data=!4m7!3m6!1s0xd41f5fa0fd72d9f:0x6f5e32a6e7e07f87!8m2!3d40.2317707!4d-3.767533!16s%2Fg%2F11vx5wk1yc!19sChIJny3XD_r1QQ0Rh3_g56YyXm8?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"106008477223291996432\",\"name\":\"Majús Restaurante en Parla (propietario)\",\"link\":\"https://www.google.com/maps/contrib/106008477223291996432\"}", "website": "https://restaurante.covermanager.com/majus-restaurante/", "review_rating": "4.700000", "review_count": "465", "emails": ""}, {"title": "La Posada Café", "category": "Restaurante", "address": "C. Torrejón, 35, 28982 Parla, Madrid", "phone": "670 08 10 37", "url": "http://www.laposadaparla.com/", "owner": "La Posada Café", "street": "C. Torrejon, 35", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/La+Posada+Caf%C3%A9/data=!4m7!3m6!1s0xd41f5382e069be1:0x1ce2fdc54bbfd839!8m2!3d40.2369673!4d-3.7660085!16s%2Fg%2F1tfmpppr!19sChIJ4ZsGLjj1QQ0ROdi_S8X94hw?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"101124764809670281330\",\"name\":\"La Posada Café (propietario)\",\"link\":\"https://www.google.com/maps/contrib/101124764809670281330\"}", "website": "http://www.laposadaparla.com/", "review_rating": "4.600000", "review_count": "701", "emails": ""}, {"title": "La Kaja", "category": "Bar restaurante", "address": "La Kaja Bar quiosco, Calle Real, 86D, 28981 Parla, Madrid", "phone": "914 34 27 39", "url": "", "owner": "La Kaja", "street": "La Kaja Bar quiosco, Calle Real, 86D", "city": "Parla", "postal_code": "28981", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/La+Kaja/data=!4m7!3m6!1s0xd41f55998109855:0x57a108aa200be960!8m2!3d40.2422577!4d-3.7688241!16s%2Fg%2F11njrgtxxx!19sChIJVZgQmFn1QQ0RYOkLIKoIoVc?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"110680943223152745439\",\"name\":\"La Kaja (propietario)\",\"link\":\"https://www.google.com/maps/contrib/110680943223152745439\"}", "website": "", "review_rating": "4.900000", "review_count": "77", "emails": ""}, {"title": "Taberna La Pepa", "category": "Taberna", "address": "C. de Felipe II, 23, 28982 Parla, Madrid", "phone": "623 76 20 26", "url": "https://www.tabernalapepa.es/", "owner": "Taberna La Pepa", "street": "C. de Felipe II, 23", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Taberna+La+Pepa/data=!4m7!3m6!1s0xd41f53757448eaf:0x122241e67e40e8aa!8m2!3d40.2315562!4d-3.7620901!16s%2Fg%2F11c241_dl6!19sChIJr45EVzf1QQ0RquhAfuZBIhI?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"110623475678669021629\",\"name\":\"Taberna La Pepa (propietario)\",\"link\":\"https://www.google.com/maps/contrib/110623475678669021629\"}", "website": "https://www.tabernalapepa.es/", "review_rating": "4.300000", "review_count": "1546", "emails": ""}, {"title": "Restaurante Don Cirilo", "category": "Restaurante especializado en tapas", "address": "C. Alfonso X el Sabio, 20, 28982 Parla, Madrid", "phone": "916 05 30 47", "url": "https://doncirilo.shop/", "owner": "Restaurante Don Cirilo", "street": "C. Alfonso X el Sabio, 20", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Restaurante+Don+Cirilo/data=!4m7!3m6!1s0xd41f5396fdd76eb:0x73b1c31bd9f0022d!8m2!3d40.2342944!4d-3.7681207!16s%2Fg%2F11cjq9wr8p!19sChIJ63bdbzn1QQ0RLQLw2RvDsXM?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"\",\"name\":\"Restaurante Don Cirilo (propietario)\",\"link\":\"\"}", "website": "https://doncirilo.shop/", "review_rating": "4.600000", "review_count": "1826", "emails": ""}, {"title": "BOCA2 bar, cafe & food", "category": "Bar restaurante", "address": "C. San Roque, 69, 28982 Parla, Madrid", "phone": "641 51 18 89", "url": "", "owner": "BOCA2 bar, cafe & food", "street": "C. San Roque, 69", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/BOCA2+bar,+cafe+%26+food/data=!4m7!3m6!1s0xd41f50fd1eb9019:0xb53cfd71cc5e9001!8m2!3d40.23659!4d-3.7643!16s%2Fg%2F11n9w4jx7_!19sChIJGZDr0Q_1QQ0RAZBezHH9PLU?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"106061328170081654314\",\"name\":\"BOCA2 bar, cafe \\u0026 food (propietario)\",\"link\":\"https://www.google.com/maps/contrib/106061328170081654314\"}", "website": "", "review_rating": "4.800000", "review_count": "26", "emails": ""}, {"title": "MESÓN RESTAURANTE EL CAZADOR", "category": "Restaurante", "address": "C. Pablo Casals, 22, 28981 Parla, Madrid", "phone": "916 99 47 51", "url": "http://elcazador.deterrazas.com/", "owner": "MESÓN RESTAURANTE EL CAZADOR", "street": "C. Pablo Casals, 22", "city": "Parla", "postal_code": "28981", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/MES%C3%93N+RESTAURANTE+EL+CAZADOR/data=!4m7!3m6!1s0xd41f53d2ab9c1d1:0x233260a65e2424f!8m2!3d40.2296237!4d-3.7739914!16s%2Fg%2F1tfgl3cq!19sChIJ0cG5Kj31QQ0RT0LiZQomMwI?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"110731933639002702351\",\"name\":\"MESÓN RESTAURANTE EL CAZADOR (propietario)\",\"link\":\"https://www.google.com/maps/contrib/110731933639002702351\"}", "website": "http://elcazador.deterrazas.com/", "review_rating": "4.300000", "review_count": "1093", "emails": ""}, {"title": "LA TABERNA ASIATICA", "category": "Bar restaurante", "address": "C. Gobernador, 28982 Parla, Madrid", "phone": "661 18 98 88", "url": "", "owner": "LA TABERNA ASIATICA", "street": "C. Gobernador", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/LA+TABERNA+ASIATICA/data=!4m7!3m6!1s0xd41f52f9d5abf53:0xabd39035c56175e0!8m2!3d40.236025!4d-3.7636637!16s%2Fg%2F11yv4_jqtj!19sChIJU79anS_1QQ0R4HVhxTWQ06s?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"109834093756770447006\",\"name\":\"LA TABERNA ASIATICA (propietario)\",\"link\":\"https://www.google.com/maps/contrib/109834093756770447006\"}", "website": "", "review_rating": "5.000000", "review_count": "3", "emails": ""}, {"title": "Bar Sophie Ella", "category": "Bar restaurante", "address": "C. Río Guadiana, 28981 Parla, Madrid", "phone": "642 92 12 74", "url": "", "owner": "Bar Sophie Ella", "street": "C. Rio Guadiana", "city": "Parla", "postal_code": "28981", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Bar+Sophie+Ella/data=!4m7!3m6!1s0xd41f51acacdb6bf:0xcb42c86655f69b05!8m2!3d40.2440377!4d-3.771589!16s%2Fg%2F11vbkf6crk!19sChIJv7bNyhr1QQ0RBZv2VWbIQss?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"115794480972177429974\",\"name\":\"Bar Sophie Ella (propietario)\",\"link\":\"https://www.google.com/maps/contrib/115794480972177429974\"}", "website": "", "review_rating": "4.900000", "review_count": "137", "emails": ""}, {"title": "Argentinissima Parla", "category": "Restaurante", "address": "C. de Cuenca, 34, 28982 Parla, Madrid", "phone": "916 98 10 33", "url": "https://argentinissimaparla.eatbu.com/?lang=es", "owner": "Argentinissima Parla", "street": "Argentinissima Parla, C. de Cuenca, 34", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Argentinissima+Parla/data=!4m7!3m6!1s0xd41f535dfdc8b7d:0x398e1c63ab756521!8m2!3d40.2426459!4d-3.7650389!16s%2Fg%2F1tfg8ztw!19sChIJfYvc3zX1QQ0RIWV1q2Mcjjk?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"117367065292458252019\",\"name\":\"Argentinissima Parla (propietario)\",\"link\":\"https://www.google.com/maps/contrib/117367065292458252019\"}", "website": "https://argentinissimaparla.eatbu.com/?lang=es", "review_rating": "4.400000", "review_count": "1058", "emails": ""}, {"title": "Ineffabile Ristorante | Restaurante italiano en Parla", "category": "Restaurante italiano", "address": "Av. de Las Lagunas, 1310, 28981 Parla, Madrid", "phone": "919 95 48 87", "url": "https://www.ineffabileristorante.com/", "owner": "Ineffabile Ristorante | Restaurante italiano en Parla", "street": "Av. de Las Lagunas, 1310", "city": "Parla", "postal_code": "28981", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Ineffabile+Ristorante+%7C+Restaurante+italiano+en+Parla/data=!4m7!3m6!1s0xd41f5b7638e8779:0xa2971e7ca681f52d!8m2!3d40.2450423!4d-3.7754595!16s%2Fg%2F11y8cgwdfr!19sChIJeYeOY7f1QQ0RLfWBpnwel6I?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"114898705108354229125\",\"name\":\"Ineffabile Ristorante | Restaurante italiano en Parla (propietario)\",\"link\":\"https://www.google.com/maps/contrib/114898705108354229125\"}", "website": "https://www.ineffabileristorante.com/", "review_rating": "4.900000", "review_count": "4729", "emails": ""}, {"title": "La Cúspide Parla _ Restaurante Peruano", "category": "Restaurante peruano", "address": "C. de Pinto, 79, 28982 Parla, Madrid", "phone": "914 41 19 84", "url": "http://www.lacuspide.es/", "owner": "La Cúspide Parla _ Restaurante Peruano", "street": "C. de Pinto, 79", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/La+C%C3%BAspide+Parla+_+Restaurante+Peruano/data=!4m7!3m6!1s0xd41f58e53279d1d:0xe427875230bd3fdf!8m2!3d40.2400572!4d-3.7602143!16s%2Fg%2F11x7xdl8z7!19sChIJHZ0nU471QQ0R3z-9MFKHJ-Q?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"100699402959913410926\",\"name\":\"La Cúspide Parla _ Restaurante Peruano (propietario)\",\"link\":\"https://www.google.com/maps/contrib/100699402959913410926\"}", "website": "http://www.lacuspide.es/", "review_rating": "4.700000", "review_count": "963", "emails": ""}, {"title": "Co-Modo Restaurante", "category": "Restaurante", "address": "Pl. Adolfo Marsillach, 28982 Parla, Madrid", "phone": "915 78 43 41", "url": "https://co-modo.es/", "owner": "Co-Modo Restaurante", "street": "Pl. Adolfo Marsillach", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Co-Modo+Restaurante/data=!4m7!3m6!1s0xd41f50320a02acb:0x3d71de3e6412f287!8m2!3d40.2371788!4d-3.768686!16s%2Fg%2F11t3qf9t8_!19sChIJyyqgIAP1QQ0Rh_ISZD7ecT0?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"115586929388852068915\",\"name\":\"Co-Modo Restaurante (propietario)\",\"link\":\"https://www.google.com/maps/contrib/115586929388852068915\"}", "website": "https://co-modo.es/", "review_rating": "4.400000", "review_count": "275", "emails": ""}, {"title": "Pokhara Heaven", "category": "Restaurante nepalí", "address": "C. del Planeta Venus, 8, 28983 Parla, Madrid", "phone": "910 11 69 30", "url": "https://www.pokharaheaven.com/", "owner": "Pokhara Heaven", "street": "C. del Planeta Venus, 8", "city": "Parla", "postal_code": "28983", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Pokhara+Heaven/data=!4m7!3m6!1s0xd41f563bce21325:0xdcfe0ed92b3bf0c2!8m2!3d40.2276757!4d-3.7586417!16s%2Fg%2F11nt080jh0!19sChIJJRPivGP1QQ0RwvA7K9kO_tw?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"104232133351428514964\",\"name\":\"Pokhara Heaven (propietario)\",\"link\":\"https://www.google.com/maps/contrib/104232133351428514964\"}", "website": "https://www.pokharaheaven.com/", "review_rating": "4.800000", "review_count": "564", "emails": ""}, {"title": "Restaurante Manosanto", "category": "Restaurante", "address": "Calle del Planeta Júpiter, 8, 28983 Parla, Madrid", "phone": "919 12 55 81", "url": "", "owner": "Restaurante Manosanto", "street": "Calle del Planeta Jupiter, 8", "city": "Parla", "postal_code": "28983", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Restaurante+Manosanto/data=!4m7!3m6!1s0xd41f55ced1a8333:0x9e83ddcabb2d131c!8m2!3d40.2186709!4d-3.7578884!16s%2Fg%2F11spm_zxf0!19sChIJM4Ma7Vz1QQ0RHBMtu8rdg54?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"107490255165207479795\",\"name\":\"Restaurante Manosanto (propietario)\",\"link\":\"https://www.google.com/maps/contrib/107490255165207479795\"}", "website": "", "review_rating": "4.400000", "review_count": "576", "emails": ""}, {"title": "Restaurante El Lagar", "category": "Parrilla", "address": "C. Cuba, 34, 28983 Parla, Madrid", "phone": "916 05 65 72", "url": "https://restaurante.covermanager.com/restaurante-el-lagar-parla/", "owner": "Restaurante El Lagar", "street": "C. Cuba, 34", "city": "Parla", "postal_code": "28983", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Restaurante+El+Lagar/data=!4m7!3m6!1s0xd41f53e57505847:0x8afc8d445af860a3!8m2!3d40.2294471!4d-3.7669543!16s%2Fg%2F1tklrvyz!19sChIJR1hQVz71QQ0Ro2D4WkSN_Io?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"111779297160796648446\",\"name\":\"Restaurante El Lagar (propietario)\",\"link\":\"https://www.google.com/maps/contrib/111779297160796648446\"}", "website": "https://restaurante.covermanager.com/restaurante-el-lagar-parla/", "review_rating": "4.200000", "review_count": "754", "emails": ""}, {"title": "Restaurante Linares", "category": "Restaurante", "address": "C. de Pinto, 59, 28982 Parla, Madrid", "phone": "916 99 17 21", "url": "http://www.restaurantelinares.com/", "owner": "Restaurante Linares", "street": "C. de Pinto, 59", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Restaurante+Linares/data=!4m7!3m6!1s0xd41f54830bf6a87:0xb4c712877133916a!8m2!3d40.2398012!4d-3.7628532!16s%2Fg%2F1tfqmp4s!19sChIJh2q_MEj1QQ0RapEzcYcSx7Q?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"115494513214740062598\",\"name\":\"Restaurante Linares (propietario)\",\"link\":\"https://www.google.com/maps/contrib/115494513214740062598\"}", "website": "http://www.restaurantelinares.com/", "review_rating": "4.500000", "review_count": "255", "emails": ""}, {"title": "EL PATIO", "category": "Bar", "address": "Calle de Cdad. Real, 13, 28982 Parla, Madrid", "phone": "722 52 88 19", "url": "", "owner": "EL PATIO", "street": "Calle de Cdad. Real, 13", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/EL+PATIO/data=!4m7!3m6!1s0xd41f5a827053e75:0x537e7af510ebceb6!8m2!3d40.2414201!4d-3.7666994!16s%2Fg%2F11mvs7pl4r!19sChIJdT4FJ6j1QQ0Rts7rEPV6flM?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"100532729026795519742\",\"name\":\"EL PATIO (propietario)\",\"link\":\"https://www.google.com/maps/contrib/100532729026795519742\"}", "website": "", "review_rating": "4.800000", "review_count": "29", "emails": ""}, {"title": "Valerossa", "category": "Bar", "address": "C. Virgen del Rocío, 14, 28982 Parla, Madrid", "phone": "633 16 69 15", "url": "https://www.instagram.com/valerossa_bar?igsh=MXB0ejRxNHV6a3ZsaA==", "owner": "Valerossa", "street": "C. Virgen del Rocio, 14", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Valerossa/data=!4m7!3m6!1s0xd41f5cb63f644fb:0xa936d12d90f0fb2e!8m2!3d40.23856!4d-3.7644961!16s%2Fg%2F11yml_bqnx!19sChIJ-0T2Y8v1QQ0RLvvwkC3RNqk?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"107210430172465680644\",\"name\":\"Valerossa (propietario)\",\"link\":\"https://www.google.com/maps/contrib/107210430172465680644\"}", "website": "https://www.instagram.com/valerossa_bar?igsh=MXB0ejRxNHV6a3ZsaA==", "review_rating": "4.900000", "review_count": "46", "emails": ""}, {"title": "Thunder Lounge", "category": "Bar", "address": "C. Juan de Austria, 6, 28982 Parla, Madrid", "phone": "629 02 91 44", "url": "", "owner": "Thunder Lounge", "street": "C. Juan de Austria, 6", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Thunder+Lounge/data=!4m7!3m6!1s0xd41f5056864ad6f:0x6f22617d7da22a4c!8m2!3d40.2354862!4d-3.7702916!16s%2Fg%2F11pl040pw2!19sChIJb61kaAX1QQ0RTCqifX1hIm8?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"110950793216400102021\",\"name\":\"Thunder Lounge (propietario)\",\"link\":\"https://www.google.com/maps/contrib/110950793216400102021\"}", "website": "", "review_rating": "4.900000", "review_count": "88", "emails": ""}, {"title": "Bar El Comienzo", "category": "Bar", "address": "Tr.ª Pintor Sorolla, 6, 28982 Parla, Madrid", "phone": "916 99 47 96", "url": "", "owner": "Bar El Comienzo", "street": "Tr.ª Pintor Sorolla, 6", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Bar+El+Comienzo/data=!4m7!3m6!1s0xd41f549aa877ccf:0x23d6b717d20ebb!8m2!3d40.2404332!4d-3.7613061!16s%2Fg%2F11c47rn7_f!19sChIJz3yHqkn1QQ0Ruw7SF7fWIwA?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"\",\"name\":\"Bar El Comienzo (propietario)\",\"link\":\"\"}", "website": "", "review_rating": "4.600000", "review_count": "119", "emails": ""}, {"title": "Bar restaurante Wonderland", "category": "Bar", "address": "C. del Planeta Saturno, 10, Loc 2, 28983 Parla, Madrid", "phone": "911 49 35 69", "url": "", "owner": "Bar restaurante Wonderland", "street": "C. del Planeta Saturno, 10, Loc 2", "city": "Parla", "postal_code": "28983", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Bar+restaurante+Wonderland/data=!4m7!3m6!1s0xd41f58ef89b2b3f:0x2fb1b4e55d4709ae!8m2!3d40.2244427!4d-3.7550116!16s%2Fg%2F11j0zz3rss!19sChIJPyub-I71QQ0RrglHXeW0sS8?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"111115414486341663066\",\"name\":\"Bar restaurante Wonderland (propietario)\",\"link\":\"https://www.google.com/maps/contrib/111115414486341663066\"}", "website": "", "review_rating": "4.200000", "review_count": "298", "emails": ""}, {"title": "Capone bar", "category": "Bar", "address": "C. Purísima Concepción, 4, 28982 Parla, Madrid", "phone": "641 42 85 67", "url": "", "owner": "Capone bar", "street": "C. Purisima Concepcion, 4", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Capone+bar/data=!4m7!3m6!1s0xd41f5373fab54cf:0x26c0e8db1d4cb5d6!8m2!3d40.2388361!4d-3.767796!16s%2Fg%2F1tfrt6qb!19sChIJz1SrPzf1QQ0R1rVMHdvowCY?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"117108449161602477856\",\"name\":\"Capone bar (propietario)\",\"link\":\"https://www.google.com/maps/contrib/117108449161602477856\"}", "website": "", "review_rating": "4.400000", "review_count": "402", "emails": ""}, {"title": "Bar CAÑONES Y TAPONES", "category": "Bar", "address": "C. de Alcorcón, 7, 28981 Parla, Madrid", "phone": "662 18 21 12", "url": "https://bar-canones-y-tapones.eatbu.com/", "owner": "Bar CAÑONES Y TAPONES", "street": "C. de Alcorcon, 7", "city": "Parla", "postal_code": "28981", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Bar+CA%C3%91ONES+Y+TAPONES/data=!4m7!3m6!1s0xd41f531e24f3891:0xa8ffae626e6443e2!8m2!3d40.2415237!4d-3.7738699!16s%2Fg%2F11b_2jg_tv!19sChIJkThP4jH1QQ0R4kNkbmKu_6g?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"114205427401256957837\",\"name\":\"Bar CAÑONES Y TAPONES (propietario)\",\"link\":\"https://www.google.com/maps/contrib/114205427401256957837\"}", "website": "https://bar-canones-y-tapones.eatbu.com/", "review_rating": "4.300000", "review_count": "261", "emails": ""}, {"title": "Bar El Toque De Queda", "category": "Bar", "address": "C. Lago Blanco, 4, 28981 Parla, Madrid", "phone": "643 08 62 54", "url": "", "owner": "Bar El Toque De Queda", "street": "C. Lago Blanco, 4", "city": "Parla", "postal_code": "28981", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Bar+El+Toque+De+Queda/data=!4m7!3m6!1s0xd41f591b9ae19bf:0x16cf761e63fb70b!8m2!3d40.2465969!4d-3.7699246!16s%2Fg%2F11pbkmr70y!19sChIJvxmuuZH1QQ0RC7c_5mH3bAE?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"\",\"name\":\"Bar El Toque De Queda (propietario)\",\"link\":\"\"}", "website": "", "review_rating": "4.600000", "review_count": "108", "emails": ""}, {"title": "Cervecería donde Chiky", "category": "Cervecería", "address": "C. Reina Victoria, 13, 28982 Parla, Madrid", "phone": "676 62 55 12", "url": "https://cartadigital.barmanagerapp.com/site/index/show/CERVECERIADONDECHIKY", "owner": "Cervecería donde Chiky", "street": "C. Reina Victoria, 13", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Cervecer%C3%ADa+donde+Chiky/data=!4m7!3m6!1s0xd41f55956ffcb09:0x837c2918751a4416!8m2!3d40.2346766!4d-3.7692454!16s%2Fg%2F11n7tgmz40!19sChIJCcv_Vln1QQ0RFkQadRgpfIM?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"106389268051627975470\",\"name\":\"Cervecería donde Chiky (propietario)\",\"link\":\"https://www.google.com/maps/contrib/106389268051627975470\"}", "website": "https://cartadigital.barmanagerapp.com/site/index/show/CERVECERIADONDECHIKY", "review_rating": "4.600000", "review_count": "250", "emails": ""}, {"title": "Beer para Creer", "category": "Restaurante", "address": "C. Rigoberta Menchú, 1, Posterior, 1, 28982 Parla, Madrid", "phone": "912 49 20 33", "url": "https://www.facebook.com/Beerparacreer", "owner": "Beer para Creer", "street": "C. Rigoberta Menchu, 1, Posterior, 1", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Beer+para+Creer/data=!4m7!3m6!1s0xd41f538c923c02b:0x8a88d54be0648c98!8m2!3d40.2380757!4d-3.7619468!16s%2Fg%2F1q5bx0j_x!19sChIJK8AjyTj1QQ0RmIxk4EvViIo?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"115412552826283848041\",\"name\":\"Beer para Creer (propietario)\",\"link\":\"https://www.google.com/maps/contrib/115412552826283848041\"}", "website": "https://www.facebook.com/Beerparacreer", "review_rating": "4.500000", "review_count": "1094", "emails": ""}, {"title": "El Bar de Rafa", "category": "Bar", "address": "Av. de Las Lagunas, 4, 28981 Madrid", "phone": "912 49 46 24", "url": "", "owner": "El Bar de Rafa", "street": "Av. de Las Lagunas, 4", "city": "Madrid", "postal_code": "28981", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/El+Bar+de+Rafa/data=!4m7!3m6!1s0xd41f554f4fb0125:0x1428c946b711fc6e!8m2!3d40.2465036!4d-3.7729283!16s%2Fg%2F11hdjg0kcn!19sChIJJQH79FT1QQ0RbvwRt0bJKBQ?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"104806685744836241402\",\"name\":\"El Bar de Rafa (propietario)\",\"link\":\"https://www.google.com/maps/contrib/104806685744836241402\"}", "website": "", "review_rating": "4.400000", "review_count": "1022", "emails": ""}, {"title": "El Raíl", "category": "Cafetería", "address": "Calle Real, 28981 Parla, Madrid", "phone": "659 10 15 92", "url": "https://elrail.es/", "owner": "El Raíl", "street": "Calle Real", "city": "Parla", "postal_code": "", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/El+Ra%C3%ADl/data=!4m7!3m6!1s0xd41f5314a41903b:0xcf3afdee508ab320!8m2!3d40.2413674!4d-3.7691112!16s%2Fg%2F11gb3n46qw!19sChIJO5BBSjH1QQ0RILOKUO79Os8?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"109754491641339730553\",\"name\":\"El Raíl (propietario)\",\"link\":\"https://www.google.com/maps/contrib/109754491641339730553\"}", "website": "https://elrail.es/", "review_rating": "4.200000", "review_count": "2412", "emails": ""}, {"title": "Cafetería Villa Lu", "category": "Restaurante", "address": "C. del Planeta Tierra, 101, 28983 Parla, Madrid", "phone": "624 94 73 80", "url": "https://villalu.es/", "owner": "Cafetería Villa Lu", "street": "C. del Planeta Tierra, 101", "city": "Parla", "postal_code": "28983", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Cafeter%C3%ADa+Villa+Lu/data=!4m7!3m6!1s0xd41f5ba195a0c09:0x439d1335c250e58!8m2!3d40.2228383!4d-3.7598866!16s%2Fg%2F11t0pjp38z!19sChIJCQxaGbr1QQ0RWA4lXDPROQQ?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"112374990078022045940\",\"name\":\"Cafetería Villa Lu (propietario)\",\"link\":\"https://www.google.com/maps/contrib/112374990078022045940\"}", "website": "https://villalu.es/", "review_rating": "4.200000", "review_count": "903", "emails": ""}, {"title": "Bistró Cafeteria Use", "category": "Cafetería", "address": "C. Alfonso XIII, 24, 28982 Madrid", "phone": "916 99 77 88", "url": "https://www.instagram.com/bistro_use?igsh=ZzIzcTh0N2hudHhq&utm_source=qr", "owner": "Bistró Cafeteria Use", "street": "C. Alfonso XIII, 24", "city": "Madrid", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Bistr%C3%B3+Cafeteria+Use/data=!4m7!3m6!1s0xd41f58f1084e05b:0x80d4f9f51b7cac4c!8m2!3d40.2334771!4d-3.7653709!16s%2Fg%2F11g0nx158j!19sChIJW-CEEI_1QQ0RTKx8G_X51IA?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"110888196567783540683\",\"name\":\"Bistró Cafeteria Use (propietario)\",\"link\":\"https://www.google.com/maps/contrib/110888196567783540683\"}", "website": "https://www.instagram.com/bistro_use?igsh=ZzIzcTh0N2hudHhq&utm_source=qr", "review_rating": "4.500000", "review_count": "1714", "emails": ""}, {"title": "La Cookie Cuqui", "category": "Cafetería", "address": "C. Domingo Malagón, 3, 28982 Parla, Madrid", "phone": "911 46 74 06", "url": "https://www.instagram.com/lacookiecuqui", "owner": "La Cookie Cuqui", "street": "C. Domingo Malagon, 3", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/La+Cookie+Cuqui/data=!4m7!3m6!1s0xd41f500382e8f4d:0x2c682e4498e8ab5f!8m2!3d40.2377438!4d-3.7683377!16s%2Fg%2F11wvqjw5pt!19sChIJTY8uOAD1QQ0RX6vomEQuaCw?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"106108778404089013384\",\"name\":\"La Cookie Cuqui (propietario)\",\"link\":\"https://www.google.com/maps/contrib/106108778404089013384\"}", "website": "https://www.instagram.com/lacookiecuqui", "review_rating": "4.700000", "review_count": "141", "emails": ""}, {"title": "Mitto", "category": "Lounge", "address": "C. Río Guadiana, 9, 28981 Parla, Madrid", "phone": "600 89 87 51", "url": "https://instagram.com/mitto_bar?igshid=YmMyMTA2M2Y=", "owner": "Mitto", "street": "C. Rio Guadiana, 9", "city": "Parla", "postal_code": "28981", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Mitto/data=!4m7!3m6!1s0xd41f50bbfcbbaeb:0x2e5d534620d3b10d!8m2!3d40.2435105!4d-3.7706264!16s%2Fg%2F11kc0ynwfv!19sChIJ67rLvwv1QQ0RDbHTIEZTXS4?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"103712016645253680525\",\"name\":\"Mitto (propietario)\",\"link\":\"https://www.google.com/maps/contrib/103712016645253680525\"}", "website": "https://instagram.com/mitto_bar?igshid=YmMyMTA2M2Y=", "review_rating": "4.700000", "review_count": "177", "emails": ""}, {"title": "Mamá café", "category": "Cafetería", "address": "Av. de las Estrellas, 49, 28983 Parla, Madrid", "phone": "697 82 26 69", "url": "", "owner": "Mamá café", "street": "Av. de las Estrellas, 49", "city": "Parla", "postal_code": "28983", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Mam%C3%A1+caf%C3%A9/data=!4m7!3m6!1s0xd41f5a72cb70fe1:0x27e4238d6c74aaf0!8m2!3d40.2253749!4d-3.7524484!16s%2Fg%2F11tg8qz4sd!19sChIJ4Q-3LKf1QQ0R8Kp0bI0j5Cc?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"102301150727701678000\",\"name\":\"Mamá café (propietario)\",\"link\":\"https://www.google.com/maps/contrib/102301150727701678000\"}", "website": "", "review_rating": "4.200000", "review_count": "239", "emails": ""}, {"title": "Cafetería Magán", "category": "Cafetería", "address": "C. Jaime I el Conquistador, 8, posterior, 28982 Parla, Madrid", "phone": "696 06 89 39", "url": "", "owner": "Cafetería Magán", "street": "C. Jaime I el Conquistador, 8, posterior", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Cafeter%C3%ADa+Mag%C3%A1n/data=!4m7!3m6!1s0xd41f5393e728085:0x6036a941c4e2ec10!8m2!3d40.2339358!4d-3.7674147!16s%2Fg%2F11hcdv2wwg!19sChIJhYByPjn1QQ0REOzixEGpNmA?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"107096497900658037487\",\"name\":\"Cafetería Magán (propietario)\",\"link\":\"https://www.google.com/maps/contrib/107096497900658037487\"}", "website": "", "review_rating": "4.800000", "review_count": "62", "emails": ""}, {"title": "Cafetería Matteo", "category": "Cafetería", "address": "Pl. de la Iglesia, 2, 28982 Parla, Madrid", "phone": "625 56 22 44", "url": "", "owner": "Cafetería Matteo", "street": "Pl. de la Iglesia, 2", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Cafeter%C3%ADa+Matteo/data=!4m7!3m6!1s0xd41f53087184b75:0xf654ac261cf5c837!8m2!3d40.2378138!4d-3.7714629!16s%2Fg%2F11cmfykkj7!19sChIJdUsYhzD1QQ0RN8j1HCasVPY?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"111451795288699144096\",\"name\":\"Cafetería Matteo (propietario)\",\"link\":\"https://www.google.com/maps/contrib/111451795288699144096\"}", "website": "", "review_rating": "4.400000", "review_count": "329", "emails": ""}, {"title": "Cafetería Sierra III", "category": "Cafetería", "address": "Calle Real, 84, 28981 Parla, Madrid", "phone": "916 05 23 66", "url": "https://cafeteria-sierra-3.eatbu.com/", "owner": "Cafetería Sierra III", "street": "Calle Real, 84", "city": "Parla", "postal_code": "28981", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Cafeter%C3%ADa+Sierra+III/data=!4m7!3m6!1s0xd41f5b736f827d5:0xf70472690aa93ef8!8m2!3d40.241873!4d-3.7686306!16s%2Fg%2F1thsbnlw!19sChIJ1Sf4Nrf1QQ0R-D6pCmlyBPc?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"102312016260409581320\",\"name\":\"Cafetería Sierra III (propietario)\",\"link\":\"https://www.google.com/maps/contrib/102312016260409581320\"}", "website": "https://cafeteria-sierra-3.eatbu.com/", "review_rating": "4.100000", "review_count": "309", "emails": ""}, {"title": "Cafetería Michelle", "category": "Cafetería", "address": "C. Río Ebro, 31, 28981 Parla, Madrid", "phone": "672 08 27 74", "url": "", "owner": "Cafetería Michelle", "street": "C. Rio Ebro, 31", "city": "Parla", "postal_code": "28981", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Cafeter%C3%ADa+Michelle/data=!4m7!3m6!1s0xd41f533ecf8e20b:0x742f20f255d0b1ce!8m2!3d40.2435723!4d-3.7698292!16s%2Fg%2F1tdqcwmx!19sChIJC-L47DP1QQ0RzrHQVfIgL3Q?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"101505227913923870470\",\"name\":\"Cafetería Michelle (propietario)\",\"link\":\"https://www.google.com/maps/contrib/101505227913923870470\"}", "website": "", "review_rating": "4.600000", "review_count": "560", "emails": ""}, {"title": "Bar Camelot", "category": "Bar", "address": "C. María Cristina, 31, 28982 Parla, Madrid", "phone": "916 98 36 18", "url": "https://parla365.es/bares/#bar_camelot", "owner": "Bar Camelot", "street": "C. Maria Cristina, 31", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Bar+Camelot/data=!4m7!3m6!1s0xd41f53f6290b1d5:0xb974d1c3d7c1ba70!8m2!3d40.2303719!4d-3.7637041!16s%2Fg%2F12qft0_rj!19sChIJ1bGQYj_1QQ0RcLrB18PRdLk?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"\",\"name\":\"Bar Camelot (propietario)\",\"link\":\"\"}", "website": "https://parla365.es/bares/#bar_camelot", "review_rating": "4.500000", "review_count": "544", "emails": ""}, {"title": "Cerveceria Plaza", "category": "Bar", "address": "28981 Parla, Madrid", "phone": "639 42 54 99", "url": "", "owner": "Cerveceria Plaza", "street": "", "city": "Parla", "postal_code": "", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Cerveceria+Plaza/data=!4m7!3m6!1s0xd41f533ef68dd9f:0x621f57b60e48d1cf!8m2!3d40.2432335!4d-3.7697641!16s%2Fg%2F11cmfyfn9_!19sChIJn91o7zP1QQ0Rz9FIDrZXH2I?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"\",\"name\":\"Cerveceria Plaza (propietario)\",\"link\":\"\"}", "website": "", "review_rating": "4.500000", "review_count": "37", "emails": ""}, {"title": "Restaurante Cervecería Macondo", "category": "Cervecería", "address": "C. de Fernando III El Santo, 28, posterior, 28982 Parla, Madrid", "phone": "603 92 45 44", "url": "https://www.instagram.com/macondobar1/", "owner": "Restaurante Cervecería Macondo", "street": "C. de Fernando III El Santo, 28, posterior", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Restaurante+Cervecer%C3%ADa+Macondo/data=!4m7!3m6!1s0xd41f5322c0daf4d:0x91945c2de19974c4!8m2!3d40.2318795!4d-3.764967!16s%2Fg%2F11y0l91wv!19sChIJTa8NLDL1QQ0RxHSZ4S1clJE?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"112670032336110424458\",\"name\":\"Restaurante Cervecería Macondo (propietario)\",\"link\":\"https://www.google.com/maps/contrib/112670032336110424458\"}", "website": "https://www.instagram.com/macondobar1/", "review_rating": "4.400000", "review_count": "94", "emails": ""}, {"title": "BTC LA BOVEDA PARLA", "category": "Bar restaurante", "address": "C. Alfonso X el Sabio, 28, 28982 Parla, Madrid", "phone": "919 95 11 21", "url": "", "owner": "BTC LA BOVEDA PARLA", "street": "C. Alfonso X el Sabio, 28", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/BTC+LA+BOVEDA+PARLA/data=!4m7!3m6!1s0xd41f5395b2dabc3:0x1be1d2586f72cd11!8m2!3d40.2331464!4d-3.7683659!16s%2Fg%2F11bzq3j65r!19sChIJw6stWzn1QQ0REc1yb1jS4Rs?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"116891312335982337618\",\"name\":\"BTC LA BOVEDA PARLA (propietario)\",\"link\":\"https://www.google.com/maps/contrib/116891312335982337618\"}", "website": "", "review_rating": "3.600000", "review_count": "811", "emails": ""}, {"title": "CIBAO 29 BAR CERVECERIA", "category": "Bar", "address": "C. de la Paloma, 16, A, 28981 Parla, Madrid", "phone": "919 48 82 60", "url": "", "owner": "CIBAO 29 BAR CERVECERIA", "street": "C. de la Paloma, 16, A", "city": "Parla", "postal_code": "28981", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/CIBAO+29+BAR+CERVECERIA/data=!4m7!3m6!1s0xd41f58ca0b97b2d:0xa5f6bcfa24fa91b!8m2!3d40.2399906!4d-3.7711333!16s%2Fg%2F11y50n1d7x!19sChIJLXu5oIz1QQ0RG6lPos9rXwo?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"117651269128598779596\",\"name\":\"CIBAO 29 BAR CERVECERIA (propietario)\",\"link\":\"https://www.google.com/maps/contrib/117651269128598779596\"}", "website": "", "review_rating": "4.900000", "review_count": "17", "emails": ""}, {"title": "Churreria Y Frutos Secos Hermanos Romero", "category": "Churrería", "address": "C. Jaime I el Conquistador, 10, 28982 Parla, Madrid", "phone": "912 49 93 30", "url": "", "owner": "Churreria Y Frutos Secos Hermanos Romero", "street": "C. Jaime I el Conquistador, 10", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Churreria+Y+Frutos+Secos+Hermanos+Romero/data=!4m7!3m6!1s0xd41f5391185ffcf:0xa479dec0b433fd60!8m2!3d40.2341088!4d-3.7671029!16s%2Fg%2F11c4bp930j!19sChIJz_-FETn1QQ0RYP0ztMDeeaQ?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"117574317554066965420\",\"name\":\"Churreria Y Frutos Secos Hermanos Romero (propietario)\",\"link\":\"https://www.google.com/maps/contrib/117574317554066965420\"}", "website": "", "review_rating": "4.600000", "review_count": "150", "emails": ""}, {"title": "Churrería Chocolatería Montesol II", "category": "Churrería", "address": "Calle Valladolid esq, C. Guadalajara, 28981 Parla, Madrid", "phone": "607 96 76 79", "url": "http://vivirenparla.com/actividades/hosteleria-y-restaurantes/cafeterias/churreria-chocolateria-montesol-ii", "owner": "Churrería Chocolatería Montesol II", "street": "Calle Valladolid esq, C. Guadalajara", "city": "Parla", "postal_code": "28981", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Churrer%C3%ADa+Chocolater%C3%ADa+Montesol+II/data=!4m7!3m6!1s0xd41f53426374747:0x9103f8536a7eca62!8m2!3d40.2428364!4d-3.7670567!16s%2Fg%2F11cns5987k!19sChIJR0c3JjT1QQ0RYsp-alP4A5E?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"114740265687029895425\",\"name\":\"Churrería Chocolatería Montesol II (propietario)\",\"link\":\"https://www.google.com/maps/contrib/114740265687029895425\"}", "website": "http://vivirenparla.com/actividades/hosteleria-y-restaurantes/cafeterias/churreria-chocolateria-montesol-ii", "review_rating": "4.500000", "review_count": "1027", "emails": ""}, {"title": "CHURRERÍA LAS AMERICAS", "category": "Churrería", "address": "C. Alfonso XIII, 25, 28982 Parla, Madrid", "phone": "677 88 14 56", "url": "https://instagram.com/lasamericas86?utm_medium=copy_link", "owner": "CHURRERÍA LAS AMERICAS", "street": "C. Alfonso XIII, 25", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/CHURRER%C3%8DA+LAS+AMERICAS/data=!4m7!3m6!1s0xd41f5c6313d513f:0xc4e24618c17856ec!8m2!3d40.2337805!4d-3.762571!16s%2Fg%2F11m_ndyyml!19sChIJP1E9Mcb1QQ0R7FZ4wRhG4sQ?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"112688021247632158063\",\"name\":\"CHURRERÍA LAS AMERICAS (propietario)\",\"link\":\"https://www.google.com/maps/contrib/112688021247632158063\"}", "website": "https://instagram.com/lasamericas86?utm_medium=copy_link", "review_rating": "4.500000", "review_count": "244", "emails": ""}, {"title": "Churrería La Perla", "category": "Churrería", "address": "C. de Burgos, 8, 28982 Parla, Madrid", "phone": "916 98 36 05", "url": "http://churrerialaperla.es/", "owner": "Churrería La Perla", "street": "C. de Burgos, 8", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Churrer%C3%ADa+La+Perla/data=!4m7!3m6!1s0xd41f5365ded4113:0x8072d73a057252ae!8m2!3d40.2413163!4d-3.7659756!16s%2Fg%2F1jglyq60h!19sChIJE0HtXTb1QQ0RrlJyBTrXcoA?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"117218717157873983408\",\"name\":\"Churrería La Perla (propietario)\",\"link\":\"https://www.google.com/maps/contrib/117218717157873983408\"}", "website": "http://churrerialaperla.es/", "review_rating": "4.300000", "review_count": "86", "emails": ""}, {"title": "Desirée Churrería Frutos Secos", "category": "Churrería", "address": "Tr.ª Severo Ochoa, 5, 28981 Parla, Madrid", "phone": "916 99 42 03", "url": "https://churreria-desiree.jimdosite.com/", "owner": "Desirée Churrería Frutos Secos", "street": "Tr.ª Severo Ochoa, 5", "city": "Parla", "postal_code": "28981", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Desir%C3%A9e+Churrer%C3%ADa+Frutos+Secos/data=!4m7!3m6!1s0xd41f53ac05de7d1:0x28cf13d1951ff64a!8m2!3d40.2362084!4d-3.7730953!16s%2Fg%2F11b5pl544l!19sChIJ0eddwDr1QQ0RSvYfldETzyg?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"102488011142783156687\",\"name\":\"Desirée Churrería Frutos Secos (propietario)\",\"link\":\"https://www.google.com/maps/contrib/102488011142783156687\"}", "website": "https://churreria-desiree.jimdosite.com/", "review_rating": "4.600000", "review_count": "240", "emails": ""}, {"title": "Churrería Aguado", "category": "Churrería", "address": "C. Reina Victoria, 20, 28982 Parla, Madrid", "phone": "912 88 61 86", "url": "", "owner": "Churrería Aguado", "street": "C. Reina Victoria, 20", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Churrer%C3%ADa+Aguado/data=!4m7!3m6!1s0xd41f53bc986d9d3:0x8e384c96cd9c749c!8m2!3d40.2345527!4d-3.7700399!16s%2Fg%2F11cns6kmtq!19sChIJ09mGyTv1QQ0RnHSczZZMOI4?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"118323814547763136911\",\"name\":\"Churrería Aguado (propietario)\",\"link\":\"https://www.google.com/maps/contrib/118323814547763136911\"}", "website": "", "review_rating": "4.400000", "review_count": "209", "emails": ""}, {"title": "La Churre", "category": "Churrería", "address": "C. de Galileo, 6, 28946 Fuenlabrada, Madrid", "phone": "637 87 77 98", "url": "", "owner": "La Churre", "street": "C. de Galileo, 6", "city": "Fuenlabrada", "postal_code": "28946", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/La+Churre/data=!4m7!3m6!1s0xd418ba6ca32b403:0x13abff61571e303e!8m2!3d40.2843983!4d-3.7831208!16s%2Fg%2F11b6v9v8z0!19sChIJA7QyyqaLQQ0RPjAeV2H_qxM?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"100800856698014411518\",\"name\":\"La Churre (propietario)\",\"link\":\"https://www.google.com/maps/contrib/100800856698014411518\"}", "website": "", "review_rating": "4.500000", "review_count": "578", "emails": ""}, {"title": "Churrería Cafetería Aguado", "category": "Churrería", "address": "C. Isabel II, 41, 28982 Parla, Madrid", "phone": "919 33 64 78", "url": "", "owner": "Churrería Cafetería Aguado", "street": "C. Isabel II, 41", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Churrer%C3%ADa+Cafeter%C3%ADa+Aguado/data=!4m7!3m6!1s0xd41f53f0b8e752b:0xf6f33f815cd343fe!8m2!3d40.2302155!4d-3.7653134!16s%2Fg%2F11fz9ymq07!19sChIJK3WOCz_1QQ0R_kPTXIE_8_Y?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"102773935335320230816\",\"name\":\"Churrería Cafetería Aguado (propietario)\",\"link\":\"https://www.google.com/maps/contrib/102773935335320230816\"}", "website": "", "review_rating": "4.000000", "review_count": "127", "emails": ""}, {"title": "Cafetería Churreria Rafael", "category": "Churrería", "address": "C. Río Ebro, 20, 28981 Parla, Madrid", "phone": "665 45 04 75", "url": "", "owner": "Cafetería Churreria Rafael", "street": "C. Rio Ebro, 20", "city": "Parla", "postal_code": "28981", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Cafeter%C3%ADa+Churreria+Rafael/data=!4m7!3m6!1s0xd41f533e404c225:0x336a40abde951436!8m2!3d40.2417806!4d-3.7699509!16s%2Fg%2F1q5bn1y5b!19sChIJJcIE5DP1QQ0RNhSV3qtAajM?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"105525059486590965598\",\"name\":\"Cafetería Churreria Rafael (propietario)\",\"link\":\"https://www.google.com/maps/contrib/105525059486590965598\"}", "website": "", "review_rating": "3.500000", "review_count": "149", "emails": ""}, {"title": "Cafetería Los Ángeles", "category": "Cafetería", "address": "C. de Burgos, 28982 Parla, Madrid", "phone": "640 67 70 83", "url": "", "owner": "Cafetería Los Ángeles", "street": "C. de Burgos", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Cafeter%C3%ADa+Los+%C3%81ngeles/data=!4m7!3m6!1s0xd41f536b06b8219:0xe299ec2963875b63!8m2!3d40.2418617!4d-3.7683128!16s%2Fg%2F11c1s_00fd!19sChIJGYJrsDb1QQ0RY1uHYynsmeI?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"\",\"name\":\"Cafetería Los Ángeles (propietario)\",\"link\":\"\"}", "website": "", "review_rating": "4.100000", "review_count": "189", "emails": ""}, {"title": "Churreria San Isidro", "category": "Churrería", "address": "C. Olivar, 3, 28991 Torrejón de la Calzada, Madrid", "phone": "918 16 03 65", "url": "https://www.facebook.com/cafeteriachurreria.isidro", "owner": "Churreria San Isidro", "street": "C. Olivar, 3", "city": "Torrejon de la Calzada", "postal_code": "28991", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Churreria+San+Isidro/data=!4m7!3m6!1s0xd41f45bf0f31d35:0x8b5acc02d355cfed!8m2!3d40.2000663!4d-3.7989912!16s%2Fg%2F1tfv6f7x!19sChIJNR3z8Fv0QQ0R7c9V0wLMWos?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"114213912960054855010\",\"name\":\"Churreria San Isidro (propietario)\",\"link\":\"https://www.google.com/maps/contrib/114213912960054855010\"}", "website": "https://www.facebook.com/cafeteriachurreria.isidro", "review_rating": "4.400000", "review_count": "743", "emails": ""}, {"title": "Bar-Churreria La curva", "category": "Cafetería", "address": "C. Castillo, s/n, Loc 1A, 28991 Torrejón de la Calzada, Madrid", "phone": "918 16 96 30", "url": "", "owner": "Bar-Churreria La curva", "street": "C. Castillo, s/n, Loc 1A", "city": "Torrejon de la Calzada", "postal_code": "28991", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Bar-Churreria+La+curva/data=!4m7!3m6!1s0xd41f45e8858ee4d:0x3aa6382184a59ace!8m2!3d40.2013849!4d-3.8019396!16s%2Fg%2F11bx0_ghr6!19sChIJTe5YiF70QQ0RzpqlhCE4pjo?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"111887785650778475217\",\"name\":\"Bar-Churreria La curva (propietario)\",\"link\":\"https://www.google.com/maps/contrib/111887785650778475217\"}", "website": "", "review_rating": "4.100000", "review_count": "440", "emails": ""}, {"title": "Meson de Mary", "category": "Restaurante de cocina española", "address": "Calle Real, 18, 28981 Parla, Madrid", "phone": "912 32 55 01", "url": "", "owner": "Meson de Mary", "street": "Calle Real, 18", "city": "Parla", "postal_code": "28981", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Meson+de+Mary/data=!4m7!3m6!1s0xd41f53a777d44cf:0x16841ca6812a4d5a!8m2!3d40.2371258!4d-3.770773!16s%2Fg%2F11c4b70pxc!19sChIJz0R9dzr1QQ0RWk0qgaYchBY?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"107712305295706662980\",\"name\":\"Meson de Mary (propietario)\",\"link\":\"https://www.google.com/maps/contrib/107712305295706662980\"}", "website": "", "review_rating": "4.000000", "review_count": "905", "emails": ""}, {"title": "Mesón Don Pedro", "category": "Restaurante", "address": "C. Carlos V, 4, 28982 Parla, Madrid", "phone": "916 22 80 46", "url": "https://mesondonpedro.shop/", "owner": "Mesón Don Pedro", "street": "C. Carlos V, 4", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Mes%C3%B3n+Don+Pedro/data=!4m7!3m6!1s0xd41f53a5616e80f:0xa99923b2658f1!8m2!3d40.235114!4d-3.7713627!16s%2Fg%2F1tfks211!19sChIJD-gWVjr1QQ0R8VgmO5KZCgA?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"115685095101477370725\",\"name\":\"Mesón Don Pedro (propietario)\",\"link\":\"https://www.google.com/maps/contrib/115685095101477370725\"}", "website": "https://mesondonpedro.shop/", "review_rating": "4.300000", "review_count": "529", "emails": ""}, {"title": "Bar Meson El Maño", "category": "Bar", "address": "C. Jerusalén, 13, 28981 Parla, Madrid", "phone": "642 47 20 94", "url": "", "owner": "Bar Meson El Maño", "street": "C. Jerusalen, 13", "city": "Parla", "postal_code": "28981", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Bar+Meson+El+Ma%C3%B1o/data=!4m7!3m6!1s0xd41f5255d7c295f:0xf26d06b32da66d3c!8m2!3d40.2367524!4d-3.7752327!16s%2Fg%2F11cnrxpwpn!19sChIJXyl8XSX1QQ0RPG2mLbMGbfI?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"101466795909770138049\",\"name\":\"Bar Meson El Maño (propietario)\",\"link\":\"https://www.google.com/maps/contrib/101466795909770138049\"}", "website": "", "review_rating": "4.500000", "review_count": "26", "emails": ""}, {"title": "Master Dim Sum", "category": "Restaurante chino", "address": "C. de Pinto, 85, Loc 8, 28982 Parla, Madrid", "phone": "614 20 79 36", "url": "https://sites.google.com/view/masterdimsumparla/carta?authuser=0&pli=1", "owner": "Master Dim Sum", "street": "C. de Pinto, 85, Loc 8", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Master+Dim+Sum/data=!4m7!3m6!1s0xd41f5638f3b02bd:0xadfce4590767681b!8m2!3d40.240025!4d-3.7585627!16s%2Fg%2F11w97yf6v4!19sChIJvQI7j2P1QQ0RG2hnB1nk_K0?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"101853054171128360165\",\"name\":\"Master Dim Sum (propietario)\",\"link\":\"https://www.google.com/maps/contrib/101853054171128360165\"}", "website": "https://sites.google.com/view/masterdimsumparla/carta?authuser=0&pli=1", "review_rating": "5.000000", "review_count": "285", "emails": ""}, {"title": "Atipica", "category": "Restaurante", "address": "Pl. Adolfo Marsillach, 28982 Parla, Madrid", "phone": "916 05 28 02", "url": "https://atipicagrill.es/", "owner": "Atipica", "street": "Pl. Adolfo Marsillach", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Atipica/data=!4m7!3m6!1s0xd41f5f3a4c00a91:0xcef475763dc12359!8m2!3d40.2375155!4d-3.7685127!16s%2Fg%2F11ld430s3j!19sChIJkQrApPP1QQ0RWSPBPXZ19M4?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"116375169774932968602\",\"name\":\"Atipica (propietario)\",\"link\":\"https://www.google.com/maps/contrib/116375169774932968602\"}", "website": "https://atipicagrill.es/", "review_rating": "4.400000", "review_count": "212", "emails": ""}, {"title": "Pizzería Típica", "category": "Pizzería", "address": "Pl. Adolfo Marsillach, s/n, 28982 Parla, Madrid", "phone": "916 05 28 02", "url": "https://tipica.es/", "owner": "Pizzería Típica", "street": "Pl. Adolfo Marsillach, s/n", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Pizzer%C3%ADa+T%C3%ADpica/data=!4m7!3m6!1s0xd41f537583f8a59:0x4bfc37d33b44ee5b!8m2!3d40.2374048!4d-3.768544!16s%2Fg%2F1tf88czc!19sChIJWYo_WDf1QQ0RW-5EO9M3_Es?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"116512405999449864654\",\"name\":\"Pizzería Típica (propietario)\",\"link\":\"https://www.google.com/maps/contrib/116512405999449864654\"}", "website": "https://tipica.es/", "review_rating": "4.400000", "review_count": "1562", "emails": ""}, {"title": "Pizzería Carlos", "category": "Pizzería", "address": "Av. del Sistema Solar, 11, 28983 Parla, Madrid", "phone": "918 37 11 00", "url": "http://www.pizzeriascarlos.es/?utm_source=GMB&utm_medium=web&utm_campaign=parla", "owner": "Pizzería Carlos", "street": "Av. del Sistema Solar, 11", "city": "Parla", "postal_code": "28983", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Pizzer%C3%ADa+Carlos/data=!4m7!3m6!1s0xd41f56b86f87889:0x1fe07b4ca8391e16!8m2!3d40.2225301!4d-3.7607487!16s%2Fg%2F11c329rj3k!19sChIJiXj4hmv1QQ0RFh45qEx74B8?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"108958106676819696991\",\"name\":\"Pizzería Carlos (propietario)\",\"link\":\"https://www.google.com/maps/contrib/108958106676819696991\"}", "website": "http://www.pizzeriascarlos.es/?utm_source=GMB&utm_medium=web&utm_campaign=parla", "review_rating": "4.000000", "review_count": "1238", "emails": ""}, {"title": "Restaurante Yoldaş Pizza & Grill", "category": "Restaurante turco", "address": "C. Carolina Coronado, 13, Loc 1, 28982 Parla, Madrid", "phone": "624 64 67 08", "url": "https://restauranteyoldas.com/", "owner": "Restaurante Yoldaş Pizza & Grill", "street": "C. Carolina Coronado, 13, Loc 1", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Restaurante+Yolda%C5%9F+Pizza+%26+Grill/data=!4m7!3m6!1s0xd41f56640b12949:0x4cf1cd172880e921!8m2!3d40.237231!4d-3.7692708!16s%2Fg%2F11sk31dfrm!19sChIJSSmxQGb1QQ0RIemAKBfN8Uw?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"100506518233986632932\",\"name\":\"Restaurante Yoldaş Pizza \\u0026 Grill (propietario)\",\"link\":\"https://www.google.com/maps/contrib/100506518233986632932\"}", "website": "https://restauranteyoldas.com/", "review_rating": "4.800000", "review_count": "370", "emails": ""}, {"title": "Pizza y Punto", "category": "Pizzería", "address": "C. de Fernando III El Santo, 27, 28982 Parla, Madrid", "phone": "645 40 90 20", "url": "https://pizzaypunto.com/", "owner": "Pizza y Punto", "street": "C. de Fernando III El Santo, 27", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Pizza+y+Punto/data=!4m7!3m6!1s0xd41f560b7d2b137:0x6cff67822fc3729d!8m2!3d40.2325807!4d-3.7663441!16s%2Fg%2F11w1k04frw!19sChIJN7HSt2D1QQ0RnXLDL4Jn_2w?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"109086533249493729578\",\"name\":\"Pizza y Punto (propietario)\",\"link\":\"https://www.google.com/maps/contrib/109086533249493729578\"}", "website": "https://pizzaypunto.com/", "review_rating": "4.400000", "review_count": "149", "emails": ""}, {"title": "Pizzeria La Nonna", "category": "Pizzería", "address": "C. de Pinto, 3, 28982 Parla, Madrid", "phone": "656 61 93 58", "url": "", "owner": "Pizzeria La Nonna", "street": "C. de Pinto, 3", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Pizzeria+La+Nonna/data=!4m7!3m6!1s0xd41f50034869d33:0x268d204626233e7!8m2!3d40.2385367!4d-3.7693715!16s%2Fg%2F11npqqw1dn!19sChIJM52GNAD1QQ0R5zNiYgTSaAI?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"111945300081769406379\",\"name\":\"Pizzeria La Nonna (propietario)\",\"link\":\"https://www.google.com/maps/contrib/111945300081769406379\"}", "website": "", "review_rating": "3.600000", "review_count": "8", "emails": ""}, {"title": "Domino's Pizza", "category": "Pizzería a domicilio", "address": "C. la Sal, 52, 28025 Parla, Madrid", "phone": "916 05 50 51", "url": "https://www.dominospizza.es/", "owner": "Domino's Pizza", "street": "C. la Sal, 52", "city": "Parla", "postal_code": "28025", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Domino%27s+Pizza/data=!4m7!3m6!1s0xd41f53124889725:0xc16a82687bb27002!8m2!3d40.2403989!4d-3.7697749!16s%2Fg%2F1tg170m8!19sChIJJZeIJDH1QQ0RAnCye2iCasE?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"111451510498318332826\",\"name\":\"Domino's Pizza (propietario)\",\"link\":\"https://www.google.com/maps/contrib/111451510498318332826\"}", "website": "https://www.dominospizza.es/", "review_rating": "4.300000", "review_count": "2199", "emails": ""}, {"title": "Me sabe a Perú", "category": "Restaurante peruano", "address": "C. Gobernador, 10, 28982 Parla, Madrid", "phone": "631 42 87 66", "url": "", "owner": "Me sabe a Perú", "street": "C. Gobernador, 10", "city": "Parla", "postal_code": "28982", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Me+sabe+a+Per%C3%BA/data=!4m7!3m6!1s0xd41f5b66f83a13b:0x857c1d9c3b73d85e!8m2!3d40.2358992!4d-3.7648166!16s%2Fg%2F11msj8ffhk!19sChIJO6GDb7b1QQ0RXthzO5wdfIU?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"112355031273824456151\",\"name\":\"Me sabe a Perú (propietario)\",\"link\":\"https://www.google.com/maps/contrib/112355031273824456151\"}", "website": "", "review_rating": "5.000000", "review_count": "37", "emails": ""}, {"title": "Papa Johns Pizza", "category": "Pizzería", "address": "C. Leganés, 33, 28981 Parla, Madrid", "phone": "918 60 35 45", "url": "https://www.papajohns.es/?utm_source=yext-google-my-business&utm_medium=organic-search&utm_campaign=local-listing", "owner": "Papa Johns Pizza", "street": "C. Leganes, 33", "city": "Parla", "postal_code": "28981", "state": "Madrid", "country": "ES", "gmaps_link": "https://www.google.com/maps/place/Papa+Johns+Pizza/data=!4m7!3m6!1s0xd41f559ec82db13:0x2aef37d4d627f308!8m2!3d40.2429659!4d-3.7769728!16s%2Fg%2F11pr3n4xkj!19sChIJE9uC7Fn1QQ0RCPMn1tQ37yo?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "raw_owner": "{\"id\":\"110518703547440863427\",\"name\":\"Papa Johns Pizza (propietario)\",\"link\":\"https://www.google.com/maps/contrib/110518703547440863427\"}", "website": "https://www.papajohns.es/?utm_source=yext-google-my-business&utm_medium=organic-search&utm_campaign=local-listing", "review_rating": "3.800000", "review_count": "759", "emails": ""}];
+        const groups = [{"title": "Majús Restaurante en Parla", "reason": "Nombre similar (sucursales), Mismo dueño registrado: Majús Restaurante en Parla, Restaurante El Lagar, Comparten dominio web: restaurante.covermanager.com", "places": [{"title": "Majús Restaurante en Parla", "category": "Restaurante", "phone": "624 04 13 03", "street": "C. Alfonso X el Sabio, 38", "city": "Parla", "website": "https://restaurante.covermanager.com/majus-restaurante/", "url": "https://restaurante.covermanager.com/majus-restaurante/", "gmaps_link": "https://www.google.com/maps/place/Maj%C3%BAs+Restaurante+en+Parla/data=!4m7!3m6!1s0xd41f5fa0fd72d9f:0x6f5e32a6e7e07f87!8m2!3d40.2317707!4d-3.767533!16s%2Fg%2F11vx5wk1yc!19sChIJny3XD_r1QQ0Rh3_g56YyXm8?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "emails": ""}, {"title": "Restaurante El Lagar", "category": "Parrilla", "phone": "916 05 65 72", "street": "C. Cuba, 34", "city": "Parla", "website": "https://restaurante.covermanager.com/restaurante-el-lagar-parla/", "url": "https://restaurante.covermanager.com/restaurante-el-lagar-parla/", "gmaps_link": "https://www.google.com/maps/place/Restaurante+El+Lagar/data=!4m7!3m6!1s0xd41f53e57505847:0x8afc8d445af860a3!8m2!3d40.2294471!4d-3.7669543!16s%2Fg%2F1tklrvyz!19sChIJR1hQVz71QQ0Ro2D4WkSN_Io?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "emails": ""}], "emails": [], "websites": ["https://restaurante.covermanager.com/majus-restaurante/", "https://restaurante.covermanager.com/restaurante-el-lagar-parla/"]}, {"title": "Churrería Cafetería Aguado", "reason": "Nombre similar (sucursales), Mismo dueño registrado: Churrería Cafetería Aguado, Churrería Aguado", "places": [{"title": "Churrería Aguado", "category": "Churrería", "phone": "912 88 61 86", "street": "C. Reina Victoria, 20", "city": "Parla", "website": "", "url": "", "gmaps_link": "https://www.google.com/maps/place/Churrer%C3%ADa+Aguado/data=!4m7!3m6!1s0xd41f53bc986d9d3:0x8e384c96cd9c749c!8m2!3d40.2345527!4d-3.7700399!16s%2Fg%2F11cns6kmtq!19sChIJ09mGyTv1QQ0RnHSczZZMOI4?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "emails": ""}, {"title": "Churrería Cafetería Aguado", "category": "Churrería", "phone": "919 33 64 78", "street": "C. Isabel II, 41", "city": "Parla", "website": "", "url": "", "gmaps_link": "https://www.google.com/maps/place/Churrer%C3%ADa+Cafeter%C3%ADa+Aguado/data=!4m7!3m6!1s0xd41f53f0b8e752b:0xf6f33f815cd343fe!8m2!3d40.2302155!4d-3.7653134!16s%2Fg%2F11fz9ymq07!19sChIJK3WOCz_1QQ0R_kPTXIE_8_Y?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "emails": ""}], "emails": [], "websites": []}, {"title": "Pizzería Típica", "reason": "Nombre similar (sucursales), Mismo dueño registrado: Pizzería Típica, Atipica, Comparten teléfono", "places": [{"title": "Atipica", "category": "Restaurante", "phone": "916 05 28 02", "street": "Pl. Adolfo Marsillach", "city": "Parla", "website": "https://atipicagrill.es/", "url": "https://atipicagrill.es/", "gmaps_link": "https://www.google.com/maps/place/Atipica/data=!4m7!3m6!1s0xd41f5f3a4c00a91:0xcef475763dc12359!8m2!3d40.2375155!4d-3.7685127!16s%2Fg%2F11ld430s3j!19sChIJkQrApPP1QQ0RWSPBPXZ19M4?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "emails": ""}, {"title": "Pizzería Típica", "category": "Pizzería", "phone": "916 05 28 02", "street": "Pl. Adolfo Marsillach, s/n", "city": "Parla", "website": "https://tipica.es/", "url": "https://tipica.es/", "gmaps_link": "https://www.google.com/maps/place/Pizzer%C3%ADa+T%C3%ADpica/data=!4m7!3m6!1s0xd41f537583f8a59:0x4bfc37d33b44ee5b!8m2!3d40.2374048!4d-3.768544!16s%2Fg%2F1tf88czc!19sChIJWYo_WDf1QQ0RW-5EO9M3_Es?authuser=0&hl=es&g_ep=EgoyMDI2MDkxNC4wIJJjKgBIAVAD&rclk=1", "emails": ""}], "emails": [], "websites": ["https://atipicagrill.es/", "https://tipica.es/"]}];
+
+        // Initialize tabs
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Populate Category Filter
+        const categories = [...new Set(records.map(r => r.category).filter(Boolean))].sort();
+        const catSelect = document.getElementById('category-select');
+        categories.forEach(cat => {
+            const opt = document.createElement('option');
+            opt.value = cat;
+            opt.textContent = cat;
+            catSelect.appendChild(opt);
+        });
+
+        // Render Table
+        function renderTable(data) {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+            
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted);">No se encontraron resultados</td></tr>';
+                return;
+            }
+            
+            data.forEach(r => {
+                const tr = document.createElement('tr');
+                
+                const webCell = r.url ? `<a href="${r.url}" target="_blank" class="badge badge-web">Visitar Web</a>` : '-';
+                const mapsCell = r.gmaps_link ? `<a href="${r.gmaps_link}" target="_blank" class="badge badge-gmaps">📍 Abrir en Maps</a>` : '-';
+                const emailCell = r.emails ? `<span class="badge badge-email">${r.emails}</span>` : '-';
+                
+                tr.innerHTML = `
+                    <td style="font-weight: 500;">${r.title}</td>
+                    <td>${r.category}</td>
+                    <td><a href="tel:${r.phone.replace(/\s+/g, '')}">${r.phone}</a></td>
+                    <td>${webCell}</td>
+                    <td>${mapsCell}</td>
+                    <td>${emailCell}</td>
+                    <td style="color: var(--text-muted); font-size: 0.85rem;">${r.street}, ${r.city}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Filter Table on search/select
+        function onFilterChange() {
+            const searchVal = document.getElementById('search-input').value.toLowerCase().trim();
+            const catVal = document.getElementById('category-select').value;
+            
+            const filtered = records.filter(r => {
+                const matchesSearch = !searchVal || 
+                    (r.title && r.title.toLowerCase().includes(searchVal)) ||
+                    (r.address && r.address.toLowerCase().includes(searchVal)) ||
+                    (r.phone && r.phone.includes(searchVal)) ||
+                    (r.emails && r.emails.toLowerCase().includes(searchVal)) ||
+                    (r.owner && r.owner.toLowerCase().includes(searchVal));
+                    
+                const matchesCat = !catVal || r.category === catVal;
+                
+                return matchesSearch && matchesCat;
+            });
+            
+            renderTable(filtered);
+        }
+
+        // Render Clusters
+        function renderClusters() {
+            const container = document.getElementById('clusters-list');
+            container.innerHTML = '';
+            
+            if (groups.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 3rem; background-color: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color);">No se identificaron clusters o locales agrupados.</div>';
+                return;
+            }
+            
+            groups.forEach(g => {
+                const card = document.createElement('div');
+                card.className = 'cluster-card';
+                let placesHtml = '';
+                g.places.forEach(p => {
+                    const web = p.website ? `<a href="${p.website}" target="_blank">Web</a>` : '-';
+                    const maps = p.gmaps_link ? `<a href="${p.gmaps_link}" target="_blank" class="badge badge-gmaps">📍 Maps</a>` : '-';
+                    const email = p.emails ? `<span class="badge badge-email">${p.emails}</span>` : '-';
+                    placesHtml += `
+                        <tr>
+                            <td style="font-weight: 500; font-size: 0.9rem;">${p.title}</td>
+                            <td style="font-size: 0.9rem;">${p.category}</td>
+                            <td style="font-size: 0.9rem;">${p.phone}</td>
+                            <td style="color: var(--text-muted); font-size: 0.85rem;">${p.street}, ${p.city}</td>
+                            <td style="font-size: 0.9rem;">${web}</td>
+                            <td style="font-size: 0.9rem;">${maps}</td>
+                            <td style="font-size: 0.9rem;">${email}</td>
+                        </tr>
+                    `;
+                });
+                
+                card.innerHTML = `
+                    <div class="cluster-header">
+                        <div class="cluster-title">${g.title}</div>
+                        <span class="cluster-reason">${g.reason}</span>
+                    </div>
+                    <div class="cluster-places-table">
+                        <table style="background-color: rgba(255,255,255,0.01);">
+                            <thead>
+                                <tr>
+                                    <th>Establecimiento</th>
+                                    <th>Categoría</th>
+                                    <th>Teléfono</th>
+                                    <th>Dirección</th>
+                                    <th>Web</th>
+                                    <th>Google Maps</th>
+                                    <th>Correo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${placesHtml}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Load Initial View
+        renderTable(records);
+        renderClusters();
+    </script>
+</body>
+</html>
